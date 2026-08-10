@@ -10,8 +10,13 @@
 // Helpers
 // ─────────────────────────────────────────────────────────
 
+function stripAsterisks(str) {
+  if (!str || typeof str !== 'string') return '';
+  return str.replace(/\*/g, '').trim();
+}
+
 function trimBlock(str) {
-  return str ? str.trim().replace(/^[-*:\s\d.]+/, '').trim() : '';
+  return str ? stripAsterisks(str.trim().replace(/^[-*:\s\d.]+/, '')) : '';
 }
 
 function parseTableRows(block) {
@@ -27,7 +32,7 @@ function parseTableRows(block) {
   // Parse headers from first row
   const headers = tableLines[0]
     .split('|')
-    .map(h => h.trim())
+    .map(h => stripAsterisks(h))
     .filter(Boolean);
 
   // Skip the separator line (e.g., |---|---|)
@@ -36,7 +41,7 @@ function parseTableRows(block) {
   return dataRows.map(row => {
     const cells = row
       .split('|')
-      .map(c => c.trim())
+      .map(c => stripAsterisks(c))
       .filter(Boolean);
     const obj = {};
     headers.forEach((h, i) => { obj[h] = cells[i] || ''; });
@@ -51,7 +56,7 @@ function parseBulletList(block) {
   if (!block) return [];
   return block
     .split('\n')
-    .map(l => l.trim().replace(/^[-*•]\s*/, '').trim())
+    .map(l => stripAsterisks(l.trim().replace(/^[-*•]\s*/, '')))
     .filter(l => l.length > 3);
 }
 
@@ -300,13 +305,29 @@ export function parseStandardResponse(text) {
     };
   }
 
+  // ── Convergence and Conflict arrays ──
+  data.convergencePoints = data.convergencePoints.map(stripAsterisks).filter(Boolean);
+  data.conflictPoints = data.conflictPoints.map(stripAsterisks).filter(Boolean);
+
+  // ── Stakeholders ──
+  data.stakeholders = data.stakeholders.map(sh => ({
+    group: stripAsterisks(sh.group),
+    benefit: stripAsterisks(sh.benefit),
+    harm: stripAsterisks(sh.harm),
+  }));
+
+  // ── Lens: Reversibility score ──
+  if (data.lenses.reversibilityScore) {
+    data.lenses.reversibilityScore.justification = stripAsterisks(data.lenses.reversibilityScore.justification);
+  }
+
   // ── Ethical Assessment ──
   const assessText = raw.assessment.join('\n');
   if (assessText.trim()) {
     const extract = (key) => {
-      const m = assessText.match(new RegExp(`\\*\\*${key}\\*\\*\\s*[:\\-]?\\s*([^\\n*]+)`, 'i'))
+      const m = assessText.match(new RegExp(`(?:\\*\\*)?${key}(?:\\*\\*)?\\s*[:\\-]?\\s*([^\\n*]+)`, 'i'))
         || assessText.match(new RegExp(`${key}\\s*[:\\-]\\s*([^\\n]+)`, 'i'));
-      return m ? m[1].trim() : '';
+      return m ? stripAsterisks(m[1]) : '';
     };
     data.ethicalAssessment = {
       position:        extract('position'),
@@ -321,14 +342,14 @@ export function parseStandardResponse(text) {
   data.frameworks = data.frameworks
     .filter(fw => fw.name && (fw.analysis || fw.primaryConcern || fw._raw))
     .map(fw => ({
-      name: fw.name,
-      primaryConcern: fw.primaryConcern.trim(),
-      keyPrinciple: fw.keyPrinciple.trim(),
-      analysis: fw.analysis.trim(),
-      judgment: fw.judgment.trim(),
-      judgmentRationale: fw.judgmentRationale.trim(),
-      content: [fw.primaryConcern, fw.keyPrinciple, fw.analysis, fw.judgmentRationale, fw._raw]
-        .filter(Boolean).join('\n').trim(),
+      name: stripAsterisks(fw.name),
+      primaryConcern: stripAsterisks(fw.primaryConcern),
+      keyPrinciple: stripAsterisks(fw.keyPrinciple),
+      analysis: stripAsterisks(fw.analysis),
+      judgment: stripAsterisks(fw.judgment),
+      judgmentRationale: stripAsterisks(fw.judgmentRationale),
+      content: stripAsterisks([fw.primaryConcern, fw.keyPrinciple, fw.analysis, fw.judgmentRationale, fw._raw]
+        .filter(Boolean).join('\n')),
     }));
 
   return data;

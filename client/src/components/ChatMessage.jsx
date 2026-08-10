@@ -57,13 +57,21 @@ function SectionHeader({ icon, label }) {
 }
 
 // ─────────────────────────────────────────────────────────
+function stripAsterisks(str) {
+  if (!str || typeof str !== 'string') return '';
+  return str.replace(/\*/g, '').trim();
+}
+
+// ─────────────────────────────────────────────────────────
 // Utility: Prose Renderer
 // ─────────────────────────────────────────────────────────
 
 function Prose({ children, style }) {
+  if (!children) return null;
+  const cleanContent = typeof children === 'string' ? children.replace(/\*/g, '') : children;
   return (
     <div className="prose-sm" style={{ fontSize: 12.5, lineHeight: 1.65, color: 'var(--text-secondary)', ...style }}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{children}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{cleanContent}</ReactMarkdown>
     </div>
   );
 }
@@ -73,6 +81,7 @@ function Prose({ children, style }) {
 // ─────────────────────────────────────────────────────────
 
 function Chip({ label, color = 'var(--text-muted)', bg = 'var(--bg-surface)', border }) {
+  const cleanLabel = stripAsterisks(label);
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center',
@@ -81,7 +90,7 @@ function Chip({ label, color = 'var(--text-muted)', bg = 'var(--bg-surface)', bo
       color, background: bg,
       border: border ? `1px solid ${border}` : `1px solid ${color}30`,
     }}>
-      {label}
+      {cleanLabel}
     </span>
   );
 }
@@ -134,7 +143,8 @@ function riskColor(risk) {
 
 function FrameworkCard({ fw, index }) {
   const [expanded, setExpanded] = useState(false);
-  const jColor = judgmentColor(fw.judgment);
+  const cleanJudgment = stripAsterisks(fw.judgment);
+  const jColor = judgmentColor(cleanJudgment);
 
   return (
     <motion.div
@@ -156,9 +166,9 @@ function FrameworkCard({ fw, index }) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: jColor, flexShrink: 0 }} />
-          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{fw.name}</span>
-          {fw.judgment && (
-            <Chip label={fw.judgment} color={jColor} />
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{stripAsterisks(fw.name)}</span>
+          {cleanJudgment && (
+            <Chip label={cleanJudgment} color={jColor} />
           )}
         </div>
         <span style={{ color: 'var(--text-muted)', flexShrink: 0, marginLeft: 8 }}>
@@ -179,35 +189,35 @@ function FrameworkCard({ fw, index }) {
               {fw.primaryConcern && (
                 <div>
                   <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 3 }}>Primary Concern</div>
-                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{fw.primaryConcern}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{stripAsterisks(fw.primaryConcern)}</div>
                 </div>
               )}
               {fw.keyPrinciple && (
                 <div>
                   <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 3 }}>Key Principle</div>
-                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{fw.keyPrinciple}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{stripAsterisks(fw.keyPrinciple)}</div>
                 </div>
               )}
               {fw.analysis && (
                 <div>
                   <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 3 }}>Analysis</div>
-                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{fw.analysis}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{stripAsterisks(fw.analysis)}</div>
                 </div>
               )}
               {/* Fallback: raw content for older-format responses */}
               {!fw.primaryConcern && !fw.analysis && fw.content && (
                 <Prose>{fw.content}</Prose>
               )}
-              {fw.judgment && (
+              {cleanJudgment && (
                 <div style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   padding: '6px 10px', borderRadius: 8,
                   background: `${jColor}12`, border: `1px solid ${jColor}25`,
                 }}>
                   <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: jColor }}>Judgment</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: jColor }}>{fw.judgment}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: jColor }}>{cleanJudgment}</span>
                   {fw.judgmentRationale && (
-                    <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>— {fw.judgmentRationale}</span>
+                    <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>— {stripAsterisks(fw.judgmentRationale)}</span>
                   )}
                 </div>
               )}
@@ -238,18 +248,18 @@ function StakeholderGrid({ stakeholders }) {
             border: '1px solid var(--border)', background: 'var(--bg-surface)',
           }}
         >
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 7 }}>{s.group}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 7 }}>{stripAsterisks(s.group)}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {s.benefit && (
               <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                 <TrendingUp size={11} style={{ color: 'var(--emerald)', flexShrink: 0, marginTop: 2 }} />
-                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>{s.benefit}</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>{stripAsterisks(s.benefit)}</span>
               </div>
             )}
             {s.harm && (
               <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                 <TrendingDown size={11} style={{ color: 'var(--red)', flexShrink: 0, marginTop: 2 }} />
-                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>{s.harm}</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>{stripAsterisks(s.harm)}</span>
               </div>
             )}
           </div>
@@ -280,7 +290,7 @@ function PrecedentTable({ rows, prose }) {
                 fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
                 color: 'var(--text-muted)', borderBottom: '1px solid var(--border)',
                 whiteSpace: 'nowrap',
-              }}>{k}</th>
+              }}>{stripAsterisks(k)}</th>
             ))}
           </tr>
         </thead>
@@ -292,7 +302,7 @@ function PrecedentTable({ rows, prose }) {
                   padding: '8px 10px', color: 'var(--text-secondary)',
                   lineHeight: 1.55, verticalAlign: 'top',
                   background: i % 2 === 0 ? 'transparent' : 'var(--bg-card)',
-                }}>{row[k]}</td>
+                }}>{stripAsterisks(row[k])}</td>
               ))}
             </tr>
           ))}
@@ -326,13 +336,13 @@ function PreMortemTable({ rows, prose }) {
                 textAlign: 'left', padding: '6px 10px',
                 fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
                 color: 'var(--text-muted)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap',
-              }}>{k}</th>
+              }}>{stripAsterisks(k)}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map((row, i) => {
-            const sev = row[severityKey] || '';
+            const sev = stripAsterisks(row[severityKey]) || '';
             const sevColor = SEVERITY_COLOR[sev] || 'var(--text-secondary)';
             return (
               <tr key={i} style={{ borderBottom: '1px solid var(--border)' }}>
@@ -342,7 +352,7 @@ function PreMortemTable({ rows, prose }) {
                     color: k === severityKey ? sevColor : 'var(--text-secondary)',
                     fontWeight: k === severityKey ? 700 : 400,
                     background: i % 2 === 0 ? 'transparent' : 'var(--bg-card)',
-                  }}>{row[k]}</td>
+                  }}>{stripAsterisks(row[k])}</td>
                 ))}
               </tr>
             );
@@ -379,7 +389,7 @@ function ReversibilityBadge({ score, prose }) {
           <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-muted)' }}>/ {outOf}</span>
         </div>
         <div>
-          <Chip label={label} color={textColor} />
+          <Chip label={stripAsterisks(label)} color={textColor} />
           {n >= 4 && (
             <div style={{ fontSize: 10, color: 'var(--red)', fontWeight: 600, marginTop: 4 }}>
               ⚠ One-Way Door — higher burden of proof required
@@ -406,7 +416,7 @@ function ReversibilityBadge({ score, prose }) {
 
       {justification && (
         <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.6, fontStyle: 'italic' }}>
-          {justification}
+          {stripAsterisks(justification)}
         </div>
       )}
 
@@ -464,7 +474,7 @@ function ConvergenceConflictPanel({ convergencePoints, conflictPoints, prose }) 
             {convergencePoints.map((pt, i) => (
               <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 12, flexShrink: 0, marginTop: 1 }}>🟢</span>
-                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{pt}</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{stripAsterisks(pt)}</span>
               </div>
             ))}
           </div>
@@ -479,7 +489,7 @@ function ConvergenceConflictPanel({ convergencePoints, conflictPoints, prose }) 
             {conflictPoints.map((pt, i) => (
               <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: 12, flexShrink: 0, marginTop: 1 }}>🔴</span>
-                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{pt}</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{stripAsterisks(pt)}</span>
               </div>
             ))}
           </div>
@@ -515,7 +525,7 @@ function AssumptionsMissingPanel({ assumptions, missingEvidence, legacyProse }) 
             {assumptions.map((a, i) => (
               <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                 <Info size={10} style={{ color: 'var(--indigo)', flexShrink: 0, marginTop: 3 }} />
-                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{a}</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{stripAsterisks(a)}</span>
               </div>
             ))}
           </div>
@@ -530,7 +540,7 @@ function AssumptionsMissingPanel({ assumptions, missingEvidence, legacyProse }) 
             {missingEvidence.map((m, i) => (
               <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                 <HelpCircle size={10} style={{ color: 'var(--amber)', flexShrink: 0, marginTop: 3 }} />
-                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{m}</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{stripAsterisks(m)}</span>
               </div>
             ))}
           </div>
@@ -547,9 +557,14 @@ function AssumptionsMissingPanel({ assumptions, missingEvidence, legacyProse }) 
 function EthicalAssessmentCard({ assessment }) {
   if (!assessment || !assessment.position) return null;
   const { position, confidence, evidenceStrength, ethicalRisk, keyUncertainty } = assessment;
-  const { color, bg } = positionColors(position);
-  const confColor = confidenceColor(confidence);
-  const riskCol = riskColor(ethicalRisk);
+  const cleanPos = stripAsterisks(position);
+  const cleanConf = stripAsterisks(confidence);
+  const cleanEv = stripAsterisks(evidenceStrength);
+  const cleanRisk = stripAsterisks(ethicalRisk);
+  const cleanUnc = stripAsterisks(keyUncertainty);
+  const { color, bg } = positionColors(cleanPos);
+  const confColor = confidenceColor(cleanConf);
+  const riskCol = riskColor(cleanRisk);
 
   return (
     <motion.div
@@ -566,33 +581,33 @@ function EthicalAssessmentCard({ assessment }) {
         <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color, marginBottom: 4 }}>
           Ethical Position
         </div>
-        <div style={{ fontSize: 15, fontWeight: 800, color }}>{position}</div>
+        <div style={{ fontSize: 15, fontWeight: 800, color }}>{cleanPos}</div>
       </div>
 
       {/* Meta row */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
-        {confidence && (
+        {cleanConf && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 80 }}>
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Confidence</div>
-            <Chip label={confidence} color={confColor} />
+            <Chip label={cleanConf} color={confColor} />
           </div>
         )}
-        {evidenceStrength && (
+        {cleanEv && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 80 }}>
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Evidence</div>
-            <Chip label={evidenceStrength} color="var(--text-muted)" />
+            <Chip label={cleanEv} color="var(--text-muted)" />
           </div>
         )}
-        {ethicalRisk && (
+        {cleanRisk && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 80 }}>
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Ethical Risk</div>
-            <Chip label={ethicalRisk} color={riskCol} />
+            <Chip label={cleanRisk} color={riskCol} />
           </div>
         )}
       </div>
 
       {/* Key uncertainty */}
-      {keyUncertainty && (
+      {cleanUnc && (
         <div style={{
           padding: '8px 12px', borderRadius: 8,
           background: 'rgba(0,0,0,0.04)',
@@ -601,7 +616,7 @@ function EthicalAssessmentCard({ assessment }) {
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 4 }}>
             Key Uncertainty
           </div>
-          <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{keyUncertainty}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{cleanUnc}</div>
         </div>
       )}
     </motion.div>
@@ -625,7 +640,7 @@ function SafeguardsList({ safeguards }) {
           style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}
         >
           <CheckCircle2 size={13} style={{ color: 'var(--emerald)', flexShrink: 0, marginTop: 2 }} />
-          <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{s}</span>
+          <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{stripAsterisks(s)}</span>
         </motion.div>
       ))}
     </div>

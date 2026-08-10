@@ -183,8 +183,8 @@ If the user specifically invokes "Council Mode," "summon the council," or asks f
 
 ## Formatting Rules
 - Use the exact section headers defined in the Response Structure above.
-- Use **bold** for framework names and field labels.
-- For Council Mode, use character name headers like "**The Utilitarian:**" for each speaker.
+- Do NOT use asterisks (*) or double asterisks (**) anywhere in your output, headers, labels, or text values.
+- For Council Mode, use plain character name headers like "The Utilitarian:" for each speaker.
 - Keep language clear, precise, and free of academic jargon where possible.
 - Separate empirical claims from ethical judgments. When making an empirical claim, note whether it is well-established, contested, or unverified.`;
 
