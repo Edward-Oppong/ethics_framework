@@ -1,0 +1,21 @@
+{
+  "name": "ethics-critic",
+  "version": "1.0.0",
+  "description": "Ethics Critic — Multi-framework AI ethical analysis chatbot",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\" --names \"API,UI\" --prefix-colors \"cyan,magenta\"",
+    "server": "node server/index.js",
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "npm run build && node server/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "openai": "^4.52.7",
+    "@anthropic-ai/sdk": "^0.27.3",
+    "@google/generative-ai": "^0.17.1",
+    "cors": "^2.8.5",
+    "concurrently": "^8.2.2"
+  }
+}

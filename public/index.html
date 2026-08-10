@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ethics Critic — AI-powered ethical reasoning platform. Analyze decisions, policies, and dilemmas across seven philosophical frameworks: Utilitarianism, Deontology, Virtue Ethics, Care Ethics, Rights-Based Ethics, Justice, and Contractualism." />
+    <meta name="keywords" content="AI ethics, ethical frameworks, moral philosophy, decision analysis, utilitarianism, deontology, virtue ethics" />
+    <meta property="og:title" content="Ethics Critic — AI Ethical Reasoning Platform" />
+    <meta property="og:description" content="Multi-framework AI ethical analysis. Map your moral tradeoffs with structured critique across seven philosophical traditions." />
+    <meta property="og:type" content="website" />
+    <title>Ethics Critic — AI Ethical Reasoning Platform</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>" />
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Initial dark mode flicker prevention -->
+    <script>
+      try {
+        const dark = localStorage.getItem('ec_dark_v1');
+        if (dark === null || dark === 'true') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch(e) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-CU4XtApR.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DIJpgYkp.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

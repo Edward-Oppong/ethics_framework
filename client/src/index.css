@@ -1,0 +1,252 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+/* ── Clean Modern Palette (Vercel / Linear / Stripe inspired) ── */
+:root {
+  /* Crisp Light Mode (Default) */
+  --bg-primary:     #fafafa;
+  --bg-surface:     #f4f4f5;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #fafafa;
+  
+  --text-primary:   #09090b;
+  --text-secondary: #52525b;
+  --text-muted:     #71717a;
+  
+  --border:         #e4e4e7;
+  --border-strong:  #d4d4d8;
+  
+  --accent:         #18181b;
+  --accent-blue:    #2563eb;
+  --accent-light:   #f4f4f5;
+  --accent-text:    #ffffff;
+  
+  --sidebar-w:           240px;
+  --sidebar-w-collapsed: 60px;
+  
+  --shadow-sm:           0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:           0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+  /* Minimalist Dark Mode (Linear / Vercel Dark) */
+  --bg-primary:     #09090b;
+  --bg-surface:     #121215;
+  --bg-card:        #18181b;
+  --bg-card-hover:  #202024;
+  
+  --text-primary:   #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted:     #71717a;
+  
+  --border:         #27272a;
+  --border-strong:  #3f3f46;
+  
+  --accent:         #ffffff;
+  --accent-blue:    #3b82f6;
+  --accent-light:   #27272a;
+  --accent-text:    #09090b;
+  
+  --shadow-sm:           0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md:           0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Base Typography & Resets ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* ── WCAG 2.1 AA Accessibility & Focus Rings ── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 10px;
+  background: var(--accent);
+  color: var(--bg-card);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  z-index: 10000;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: 10px;
+}
+
+/* Clean Font Helpers */
+.font-sans {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Component Utility Classes ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.input-base {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input-base:focus {
+  border-color: var(--border-strong);
+  background: var(--bg-card);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: var(--bg-card);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+/* ── Layout Framework ── */
+#root {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 50;
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-w-collapsed);
+}
+
+.workspace {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+.page-view {
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+}
+
+.page-scroll {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2rem 2.5rem;
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Form Controls & Transitions ── */
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
