@@ -3,11 +3,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { parseStandardResponse, parseCouncilResponse } from '../utils/responseParser.js';
 import {
   Scale, History, AlertOctagon, Undo2, ArrowRightLeft,
-  ChevronDown, ChevronUp, Copy, Check, Gauge, Users,
-  BookOpen, Lightbulb, AlertTriangle
+  ChevronDown, ChevronUp, Copy, Check, Users,
+  BookOpen, Lightbulb, AlertTriangle, ShieldCheck,
+  TrendingUp, TrendingDown, Minus, CircleDot, Info,
+  CheckCircle2, XCircle, HelpCircle
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
+// ─────────────────────────────────────────────────────────
+// Utility: Copy Button
+// ─────────────────────────────────────────────────────────
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
@@ -35,35 +41,106 @@ function CopyButton({ text }) {
   );
 }
 
-function MeterBar({ label, icon, value, color = 'var(--amber)' }) {
+// ─────────────────────────────────────────────────────────
+// Utility: Section Header
+// ─────────────────────────────────────────────────────────
+
+function SectionHeader({ icon, label }) {
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>
-          {icon}
-          <span>{label}</span>
-        </div>
-        <span style={{ fontSize: 11, fontWeight: 700, color }}>{value}%</span>
-      </div>
-      <div style={{ height: 4, width: '100%', borderRadius: 99, background: 'var(--bg-surface)', overflow: 'hidden' }}>
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${value}%` }}
-          transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
-          style={{ height: '100%', borderRadius: 99, background: color }}
-        />
-      </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+      <span style={{ color: 'var(--text-muted)', display: 'flex' }}>{icon}</span>
+      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+        {label}
+      </span>
     </div>
   );
 }
 
+// ─────────────────────────────────────────────────────────
+// Utility: Prose Renderer
+// ─────────────────────────────────────────────────────────
+
+function Prose({ children, style }) {
+  return (
+    <div className="prose-sm" style={{ fontSize: 12.5, lineHeight: 1.65, color: 'var(--text-secondary)', ...style }}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{children}</ReactMarkdown>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Chip / Badge
+// ─────────────────────────────────────────────────────────
+
+function Chip({ label, color = 'var(--text-muted)', bg = 'var(--bg-surface)', border }) {
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center',
+      fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+      padding: '3px 8px', borderRadius: 99,
+      color, background: bg,
+      border: border ? `1px solid ${border}` : `1px solid ${color}30`,
+    }}>
+      {label}
+    </span>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Judgment badge colors
+// ─────────────────────────────────────────────────────────
+
+function judgmentColor(judgment) {
+  const j = (judgment || '').toLowerCase();
+  if (j.includes('support') && j.includes('conditional')) return 'var(--amber)';
+  if (j.includes('support')) return 'var(--emerald)';
+  if (j.includes('opposition') && j.includes('conditional')) return 'var(--amber)';
+  if (j.includes('opposition') || j.includes('oppose')) return 'var(--red)';
+  if (j.includes('mixed') || j.includes('contested')) return 'var(--indigo)';
+  if (j.includes('insufficient')) return 'var(--text-muted)';
+  return 'var(--text-muted)';
+}
+
+function positionColors(position) {
+  const p = (position || '').toLowerCase();
+  if (p.includes('conditional support')) return { color: 'var(--amber)', bg: 'var(--amber-dim)' };
+  if (p.includes('support')) return { color: 'var(--emerald)', bg: 'var(--emerald-dim)' };
+  if (p.includes('conditional opposition')) return { color: 'var(--amber)', bg: 'var(--amber-dim)' };
+  if (p.includes('opposition') || p.includes('oppose')) return { color: 'var(--red)', bg: 'var(--red-dim)' };
+  if (p.includes('mixed') || p.includes('contested')) return { color: 'var(--indigo)', bg: 'var(--indigo-dim)' };
+  if (p.includes('insufficient')) return { color: 'var(--text-muted)', bg: 'var(--bg-surface)' };
+  return { color: 'var(--text-muted)', bg: 'var(--bg-surface)' };
+}
+
+function confidenceColor(conf) {
+  const c = (conf || '').toLowerCase();
+  if (c === 'high') return 'var(--emerald)';
+  if (c === 'moderate') return 'var(--amber)';
+  if (c === 'low') return 'var(--red)';
+  return 'var(--text-muted)';
+}
+
+function riskColor(risk) {
+  const r = (risk || '').toLowerCase();
+  if (r === 'high') return 'var(--red)';
+  if (r.includes('medium') || r === 'moderate') return 'var(--amber)';
+  if (r === 'low') return 'var(--emerald)';
+  return 'var(--text-muted)';
+}
+
+// ─────────────────────────────────────────────────────────
+// Framework Card
+// ─────────────────────────────────────────────────────────
+
 function FrameworkCard({ fw, index }) {
   const [expanded, setExpanded] = useState(false);
+  const jColor = judgmentColor(fw.judgment);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      transition={{ delay: index * 0.04 }}
       style={{
         borderRadius: 10, border: '1px solid var(--border)',
         background: 'var(--bg-surface)', overflow: 'hidden',
@@ -77,14 +154,18 @@ function FrameworkCard({ fw, index }) {
           textAlign: 'left', fontFamily: 'inherit',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--amber)', flexShrink: 0 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: jColor, flexShrink: 0 }} />
           <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{fw.name}</span>
+          {fw.judgment && (
+            <Chip label={fw.judgment} color={jColor} />
+          )}
         </div>
-        <span style={{ color: 'var(--text-muted)' }}>
+        <span style={{ color: 'var(--text-muted)', flexShrink: 0, marginLeft: 8 }}>
           {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
         </span>
       </button>
+
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -94,10 +175,42 @@ function FrameworkCard({ fw, index }) {
             transition={{ duration: 0.18 }}
             style={{ overflow: 'hidden' }}
           >
-            <div style={{ padding: '0 14px 12px', borderTop: '1px solid var(--border)' }}>
-              <div className="prose-sm" style={{ marginTop: 10 }}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{fw.content}</ReactMarkdown>
-              </div>
+            <div style={{ padding: '12px 14px', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {fw.primaryConcern && (
+                <div>
+                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 3 }}>Primary Concern</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{fw.primaryConcern}</div>
+                </div>
+              )}
+              {fw.keyPrinciple && (
+                <div>
+                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 3 }}>Key Principle</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{fw.keyPrinciple}</div>
+                </div>
+              )}
+              {fw.analysis && (
+                <div>
+                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 3 }}>Analysis</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{fw.analysis}</div>
+                </div>
+              )}
+              {/* Fallback: raw content for older-format responses */}
+              {!fw.primaryConcern && !fw.analysis && fw.content && (
+                <Prose>{fw.content}</Prose>
+              )}
+              {fw.judgment && (
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '6px 10px', borderRadius: 8,
+                  background: `${jColor}12`, border: `1px solid ${jColor}25`,
+                }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: jColor }}>Judgment</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: jColor }}>{fw.judgment}</span>
+                  {fw.judgmentRationale && (
+                    <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>— {fw.judgmentRationale}</span>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -106,40 +219,428 @@ function FrameworkCard({ fw, index }) {
   );
 }
 
-function LensCard({ icon, title, content, accentColor = 'var(--amber)' }) {
+// ─────────────────────────────────────────────────────────
+// Stakeholder Grid
+// ─────────────────────────────────────────────────────────
+
+function StakeholderGrid({ stakeholders }) {
+  if (!stakeholders || stakeholders.length === 0) return null;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {stakeholders.map((s, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, x: -4 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: i * 0.04 }}
+          style={{
+            padding: '10px 12px', borderRadius: 10,
+            border: '1px solid var(--border)', background: 'var(--bg-surface)',
+          }}
+        >
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 7 }}>{s.group}</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {s.benefit && (
+              <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                <TrendingUp size={11} style={{ color: 'var(--emerald)', flexShrink: 0, marginTop: 2 }} />
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>{s.benefit}</span>
+              </div>
+            )}
+            {s.harm && (
+              <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                <TrendingDown size={11} style={{ color: 'var(--red)', flexShrink: 0, marginTop: 2 }} />
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.55 }}>{s.harm}</span>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Precedent Table
+// ─────────────────────────────────────────────────────────
+
+function PrecedentTable({ rows, prose }) {
+  if (!rows || rows.length === 0) {
+    return prose ? <Prose>{prose}</Prose> : null;
+  }
+  // Find actual column keys (header names vary slightly from model)
+  const keys = Object.keys(rows[0]);
+  return (
+    <div style={{ overflowX: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11.5 }}>
+        <thead>
+          <tr>
+            {keys.map(k => (
+              <th key={k} style={{
+                textAlign: 'left', padding: '6px 10px',
+                fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+                color: 'var(--text-muted)', borderBottom: '1px solid var(--border)',
+                whiteSpace: 'nowrap',
+              }}>{k}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i} style={{ borderBottom: '1px solid var(--border)' }}>
+              {keys.map(k => (
+                <td key={k} style={{
+                  padding: '8px 10px', color: 'var(--text-secondary)',
+                  lineHeight: 1.55, verticalAlign: 'top',
+                  background: i % 2 === 0 ? 'transparent' : 'var(--bg-card)',
+                }}>{row[k]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Pre-Mortem Table
+// ─────────────────────────────────────────────────────────
+
+const SEVERITY_COLOR = { High: 'var(--red)', Medium: 'var(--amber)', Low: 'var(--emerald)' };
+
+function PreMortemTable({ rows, prose }) {
+  if (!rows || rows.length === 0) {
+    return prose ? <Prose>{prose}</Prose> : null;
+  }
+  const keys = Object.keys(rows[0]);
+  // Detect the "Severity" column key regardless of exact capitalisation
+  const severityKey = keys.find(k => k.toLowerCase().includes('severity')) || '';
+
+  return (
+    <div style={{ overflowX: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11.5 }}>
+        <thead>
+          <tr>
+            {keys.map(k => (
+              <th key={k} style={{
+                textAlign: 'left', padding: '6px 10px',
+                fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+                color: 'var(--text-muted)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap',
+              }}>{k}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => {
+            const sev = row[severityKey] || '';
+            const sevColor = SEVERITY_COLOR[sev] || 'var(--text-secondary)';
+            return (
+              <tr key={i} style={{ borderBottom: '1px solid var(--border)' }}>
+                {keys.map(k => (
+                  <td key={k} style={{
+                    padding: '8px 10px', lineHeight: 1.55, verticalAlign: 'top',
+                    color: k === severityKey ? sevColor : 'var(--text-secondary)',
+                    fontWeight: k === severityKey ? 700 : 400,
+                    background: i % 2 === 0 ? 'transparent' : 'var(--bg-card)',
+                  }}>{row[k]}</td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Reversibility Badge
+// ─────────────────────────────────────────────────────────
+
+function ReversibilityBadge({ score, prose }) {
+  if (!score) {
+    return prose ? <Prose>{prose}</Prose> : null;
+  }
+  const { score: n, outOf, label, justification } = score;
+  const pct = (n / outOf) * 100;
+  // Low score = more reversible = green; high = red
+  const barColor = n <= 2 ? 'var(--emerald)' : n === 3 ? 'var(--amber)' : 'var(--red)';
+  const textColor = barColor;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* Score display */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{
+          display: 'flex', alignItems: 'baseline', gap: 3,
+          fontSize: 28, fontWeight: 800, color: textColor, lineHeight: 1,
+        }}>
+          {n}
+          <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-muted)' }}>/ {outOf}</span>
+        </div>
+        <div>
+          <Chip label={label} color={textColor} />
+          {n >= 4 && (
+            <div style={{ fontSize: 10, color: 'var(--red)', fontWeight: 600, marginTop: 4 }}>
+              ⚠ One-Way Door — higher burden of proof required
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bar */}
+      <div style={{ height: 5, width: '100%', borderRadius: 99, background: 'var(--border)', overflow: 'hidden' }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.9, ease: 'easeOut', delay: 0.2 }}
+          style={{ height: '100%', borderRadius: 99, background: barColor }}
+        />
+      </div>
+
+      {/* Scale legend */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: 'var(--text-muted)', fontWeight: 600 }}>
+        <span>1 — Highly reversible</span>
+        <span>5 — Irreversible</span>
+      </div>
+
+      {justification && (
+        <div style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.6, fontStyle: 'italic' }}>
+          {justification}
+        </div>
+      )}
+
+      {/* Fallback prose for models that didn't use structured score */}
+      {!justification && prose && <Prose>{prose}</Prose>}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Lens Card (generic)
+// ─────────────────────────────────────────────────────────
+
+function LensCard({ icon, title, children, accentColor = 'var(--amber)' }) {
   return (
     <div style={{
       padding: '12px 14px', borderRadius: 10,
       border: `1px solid ${accentColor}25`,
       background: `${accentColor}08`,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
         <span style={{ color: accentColor }}>{icon}</span>
         <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: accentColor }}>
           {title}
         </span>
       </div>
-      <div className="prose-sm">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-      </div>
+      {children}
     </div>
   );
 }
 
-function SectionHeader({ icon, label }) {
+// ─────────────────────────────────────────────────────────
+// Convergence & Conflict Panel
+// ─────────────────────────────────────────────────────────
+
+function ConvergenceConflictPanel({ convergencePoints, conflictPoints, prose }) {
+  const hasStructured = (convergencePoints && convergencePoints.length > 0) || (conflictPoints && conflictPoints.length > 0);
+
+  if (!hasStructured) {
+    return prose ? (
+      <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
+        <Prose>{prose}</Prose>
+      </div>
+    ) : null;
+  }
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-      <span style={{ color: 'var(--text-muted)', display: 'flex' }}>{icon}</span>
-      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
-        {label}
-      </span>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      {convergencePoints && convergencePoints.length > 0 && (
+        <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--emerald)25', background: 'var(--emerald-dim)' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--emerald)', marginBottom: 8 }}>
+            Convergence
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {convergencePoints.map((pt, i) => (
+              <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 12, flexShrink: 0, marginTop: 1 }}>🟢</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{pt}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {conflictPoints && conflictPoints.length > 0 && (
+        <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--red)25', background: 'var(--red-dim)' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--red)', marginBottom: 8 }}>
+            Conflict
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {conflictPoints.map((pt, i) => (
+              <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 12, flexShrink: 0, marginTop: 1 }}>🔴</span>
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{pt}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+// ─────────────────────────────────────────────────────────
+// Assumptions & Missing Evidence Panel
+// ─────────────────────────────────────────────────────────
+
+function AssumptionsMissingPanel({ assumptions, missingEvidence, legacyProse }) {
+  const hasStructured = (assumptions && assumptions.length > 0) || (missingEvidence && missingEvidence.length > 0);
+
+  if (!hasStructured) {
+    return legacyProse ? (
+      <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
+        <Prose>{legacyProse}</Prose>
+      </div>
+    ) : null;
+  }
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      {assumptions && assumptions.length > 0 && (
+        <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 8 }}>
+            Assumptions
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {assumptions.map((a, i) => (
+              <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                <Info size={10} style={{ color: 'var(--indigo)', flexShrink: 0, marginTop: 3 }} />
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{a}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {missingEvidence && missingEvidence.length > 0 && (
+        <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 8 }}>
+            Missing Evidence
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {missingEvidence.map((m, i) => (
+              <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'flex-start' }}>
+                <HelpCircle size={10} style={{ color: 'var(--amber)', flexShrink: 0, marginTop: 3 }} />
+                <span style={{ fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{m}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Ethical Assessment Card
+// ─────────────────────────────────────────────────────────
+
+function EthicalAssessmentCard({ assessment }) {
+  if (!assessment || !assessment.position) return null;
+  const { position, confidence, evidenceStrength, ethicalRisk, keyUncertainty } = assessment;
+  const { color, bg } = positionColors(position);
+  const confColor = confidenceColor(confidence);
+  const riskCol = riskColor(ethicalRisk);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      style={{
+        padding: '16px', borderRadius: 12,
+        border: `1px solid ${color}30`,
+        background: bg,
+      }}
+    >
+      {/* Position */}
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color, marginBottom: 4 }}>
+          Ethical Position
+        </div>
+        <div style={{ fontSize: 15, fontWeight: 800, color }}>{position}</div>
+      </div>
+
+      {/* Meta row */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+        {confidence && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 80 }}>
+            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Confidence</div>
+            <Chip label={confidence} color={confColor} />
+          </div>
+        )}
+        {evidenceStrength && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 80 }}>
+            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Evidence</div>
+            <Chip label={evidenceStrength} color="var(--text-muted)" />
+          </div>
+        )}
+        {ethicalRisk && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 80 }}>
+            <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Ethical Risk</div>
+            <Chip label={ethicalRisk} color={riskCol} />
+          </div>
+        )}
+      </div>
+
+      {/* Key uncertainty */}
+      {keyUncertainty && (
+        <div style={{
+          padding: '8px 12px', borderRadius: 8,
+          background: 'rgba(0,0,0,0.04)',
+          border: '1px solid rgba(0,0,0,0.06)',
+        }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 4 }}>
+            Key Uncertainty
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{keyUncertainty}</div>
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Safeguards List
+// ─────────────────────────────────────────────────────────
+
+function SafeguardsList({ safeguards }) {
+  if (!safeguards || safeguards.length === 0) return null;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {safeguards.map((s, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, x: -4 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: i * 0.03 }}
+          style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}
+        >
+          <CheckCircle2 size={13} style={{ color: 'var(--emerald)', flexShrink: 0, marginTop: 2 }} />
+          <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{s}</span>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Standard Analysis (main rendered output)
+// ─────────────────────────────────────────────────────────
 
 function StandardAnalysis({ text }) {
   const data = parseStandardResponse(text);
-  if (!data || (!data.coreTension && data.frameworks.length === 0)) {
+
+  // If parsing yields nothing useful, fall back to plain markdown
+  if (!data || (!data.coreTension && data.frameworks.length === 0 && !data.synthesis)) {
     return (
       <div className="prose-sm" style={{ fontSize: 13, lineHeight: 1.7 }}>
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
@@ -147,49 +648,26 @@ function StandardAnalysis({ text }) {
     );
   }
 
-  const conflictCount = (data.convergence.match(/(conflict|clash|oppose|friction)/gi) || []).length;
-  const consensusPercent = Math.max(10, Math.min(95, 90 - conflictCount * 15));
-  const isOneWay = text.toLowerCase().includes('one-way') || text.toLowerCase().includes('irreversible');
-  const reversPercent = isOneWay ? 25 : 75;
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* Meters */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, padding: '14px',
-        borderRadius: 10, background: 'var(--bg-surface)', border: '1px solid var(--border)',
-      }}>
-        <MeterBar
-          label="Ethical Consensus"
-          icon={<Gauge size={10} />}
-          value={consensusPercent}
-          color={consensusPercent > 65 ? 'var(--emerald)' : consensusPercent > 40 ? 'var(--amber)' : 'var(--red)'}
-        />
-        <MeterBar
-          label="Reversibility"
-          icon={<Undo2 size={10} />}
-          value={reversPercent}
-          color={reversPercent > 60 ? 'var(--emerald)' : 'var(--red)'}
-        />
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-      {/* Core Tension */}
+      {/* ① Core Ethical Tension */}
       {data.coreTension && (
         <div style={{
-          padding: '14px', borderRadius: 10,
+          padding: '14px 16px', borderRadius: 10,
           border: '1px solid var(--amber-dim)', background: 'var(--amber-dim)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
             <Scale size={13} style={{ color: 'var(--amber)' }} />
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--amber)' }}>Core Tension</span>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--amber)' }}>
+              Core Ethical Tension
+            </span>
           </div>
-          <div className="prose-sm">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.coreTension}</ReactMarkdown>
-          </div>
+          <Prose>{data.coreTension}</Prose>
         </div>
       )}
 
-      {/* Frameworks */}
+      {/* ② Framework Analysis */}
       {data.frameworks.length > 0 && (
         <div>
           <SectionHeader icon={<BookOpen size={11} />} label="Framework Analysis" />
@@ -201,66 +679,109 @@ function StandardAnalysis({ text }) {
         </div>
       )}
 
-      {/* Diagnostic Lenses */}
+      {/* ③ Stakeholder Impact */}
+      {data.stakeholders && data.stakeholders.length > 0 && (
+        <div>
+          <SectionHeader icon={<Users size={11} />} label="Stakeholder Impact" />
+          <StakeholderGrid stakeholders={data.stakeholders} />
+        </div>
+      )}
+
+      {/* ④ Diagnostic Lenses */}
       {(data.lenses.precedent || data.lenses.preMortem || data.lenses.reversibility) && (
         <div>
           <SectionHeader icon={<History size={11} />} label="Diagnostic Lenses" />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+
             {data.lenses.precedent && (
-              <LensCard icon={<History size={12} />} title="Historical Precedent" content={data.lenses.precedent} accentColor="var(--indigo)" />
+              <LensCard icon={<History size={12} />} title="Historical Precedent" accentColor="var(--indigo)">
+                <PrecedentTable rows={data.lenses.precedentTable} prose={data.lenses.precedentTable.length === 0 ? data.lenses.precedent : ''} />
+              </LensCard>
             )}
+
             {data.lenses.preMortem && (
-              <LensCard icon={<AlertOctagon size={12} />} title="Pre-Mortem" content={data.lenses.preMortem} accentColor="var(--red)" />
+              <LensCard icon={<AlertOctagon size={12} />} title="5-Year Pre-Mortem" accentColor="var(--red)">
+                <PreMortemTable rows={data.lenses.preMortemTable} prose={data.lenses.preMortemTable.length === 0 ? data.lenses.preMortem : ''} />
+              </LensCard>
             )}
+
             {data.lenses.reversibility && (
-              <LensCard icon={<Undo2 size={12} />} title="Reversibility Check" content={data.lenses.reversibility} accentColor="var(--cyan)" />
+              <LensCard icon={<Undo2 size={12} />} title="Reversibility" accentColor="var(--cyan)">
+                <ReversibilityBadge score={data.lenses.reversibilityScore} prose={!data.lenses.reversibilityScore ? data.lenses.reversibility : ''} />
+              </LensCard>
             )}
           </div>
         </div>
       )}
 
-      {/* Convergence */}
-      {data.convergence && (
+      {/* ⑤ Convergence & Conflict */}
+      {(data.convergencePoints.length > 0 || data.conflictPoints.length > 0 || data.convergence) && (
         <div>
           <SectionHeader icon={<ArrowRightLeft size={11} />} label="Convergence & Conflict" />
-          <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
-            <div className="prose-sm">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.convergence}</ReactMarkdown>
-            </div>
-          </div>
+          <ConvergenceConflictPanel
+            convergencePoints={data.convergencePoints}
+            conflictPoints={data.conflictPoints}
+            prose={data.convergence}
+          />
         </div>
       )}
 
-      {/* Missing Info */}
-      {data.missingInfo && (
+      {/* ⑥ Assumptions & Missing Evidence */}
+      {(data.assumptions.length > 0 || data.missingEvidence.length > 0 || data.missingInfo) && (
         <div>
-          <SectionHeader icon={<AlertTriangle size={11} />} label="Assumptions & Missing Info" />
-          <div style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
-            <div className="prose-sm">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.missingInfo}</ReactMarkdown>
-            </div>
-          </div>
+          <SectionHeader icon={<AlertTriangle size={11} />} label="Assumptions & Missing Evidence" />
+          <AssumptionsMissingPanel
+            assumptions={data.assumptions}
+            missingEvidence={data.missingEvidence}
+            legacyProse={data.missingInfo}
+          />
         </div>
       )}
 
-      {/* Synthesis */}
+      {/* ⑦ Ethical Assessment */}
+      {data.ethicalAssessment && (
+        <div>
+          <SectionHeader icon={<CircleDot size={11} />} label="Ethical Assessment" />
+          <EthicalAssessmentCard assessment={data.ethicalAssessment} />
+        </div>
+      )}
+
+      {/* ⑧ Synthesis */}
       {data.synthesis && (
         <div style={{
-          padding: '14px', borderRadius: 10,
+          padding: '14px 16px', borderRadius: 10,
           border: '1px solid var(--emerald-dim)', background: 'var(--emerald-dim)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
             <Lightbulb size={13} style={{ color: 'var(--emerald)' }} />
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--emerald)' }}>Synthesis</span>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--emerald)' }}>
+              Synthesis
+            </span>
           </div>
-          <div className="prose-sm">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.synthesis}</ReactMarkdown>
+          <Prose>{data.synthesis}</Prose>
+        </div>
+      )}
+
+      {/* ⑨ Safeguards Required */}
+      {data.safeguards && data.safeguards.length > 0 && (
+        <div>
+          <SectionHeader icon={<ShieldCheck size={11} />} label="Safeguards Required" />
+          <div style={{
+            padding: '12px 14px', borderRadius: 10,
+            border: '1px solid var(--emerald)30', background: 'var(--bg-surface)',
+          }}>
+            <SafeguardsList safeguards={data.safeguards} />
           </div>
         </div>
       )}
+
     </div>
   );
 }
+
+// ─────────────────────────────────────────────────────────
+// Council Analysis (unchanged)
+// ─────────────────────────────────────────────────────────
 
 function CouncilAnalysis({ text }) {
   const data = parseCouncilResponse(text);
@@ -271,14 +792,6 @@ function CouncilAnalysis({ text }) {
       </div>
     );
   }
-
-  const SPEAKER_COLORS = {
-    utilitarian: 'var(--amber)',
-    deontologist: 'var(--indigo)',
-    virtue: 'var(--cyan)',
-    care: 'var(--emerald)',
-    rights: 'var(--red)',
-  };
 
   const getSpeakerColor = (speaker) => {
     const s = speaker.toLowerCase();
@@ -298,9 +811,7 @@ function CouncilAnalysis({ text }) {
           border: '1px solid var(--amber-dim)', background: 'var(--amber-dim)',
         }}>
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--amber)', marginBottom: 6 }}>Moderator</div>
-          <div className="prose-sm">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.moderatorIntro}</ReactMarkdown>
-          </div>
+          <Prose>{data.moderatorIntro}</Prose>
         </div>
       )}
 
@@ -330,9 +841,7 @@ function CouncilAnalysis({ text }) {
                     <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color, marginBottom: 6 }}>
                       {d.speaker}
                     </div>
-                    <div className="prose-sm">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{d.text}</ReactMarkdown>
-                    </div>
+                    <Prose>{d.text}</Prose>
                   </div>
                 </motion.div>
               );
@@ -346,13 +855,19 @@ function CouncilAnalysis({ text }) {
           <SectionHeader icon={<History size={11} />} label="Diagnostic Overlays" />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {data.overlays.precedent && (
-              <LensCard icon={<History size={12} />} title="Historical Precedent" content={data.overlays.precedent} accentColor="var(--indigo)" />
+              <LensCard icon={<History size={12} />} title="Historical Precedent" accentColor="var(--indigo)">
+                <Prose>{data.overlays.precedent}</Prose>
+              </LensCard>
             )}
             {data.overlays.preMortem && (
-              <LensCard icon={<AlertOctagon size={12} />} title="Pre-Mortem" content={data.overlays.preMortem} accentColor="var(--red)" />
+              <LensCard icon={<AlertOctagon size={12} />} title="Pre-Mortem" accentColor="var(--red)">
+                <Prose>{data.overlays.preMortem}</Prose>
+              </LensCard>
             )}
             {data.overlays.reversibility && (
-              <LensCard icon={<Undo2 size={12} />} title="Reversibility Check" content={data.overlays.reversibility} accentColor="var(--cyan)" />
+              <LensCard icon={<Undo2 size={12} />} title="Reversibility Check" accentColor="var(--cyan)">
+                <Prose>{data.overlays.reversibility}</Prose>
+              </LensCard>
             )}
           </div>
         </div>
@@ -364,14 +879,16 @@ function CouncilAnalysis({ text }) {
           border: '1px solid var(--emerald-dim)', background: 'var(--emerald-dim)',
         }}>
           <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--emerald)', marginBottom: 6 }}>Closing Synthesis</div>
-          <div className="prose-sm">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{data.closingMap}</ReactMarkdown>
-          </div>
+          <Prose>{data.closingMap}</Prose>
         </div>
       )}
     </div>
   );
 }
+
+// ─────────────────────────────────────────────────────────
+// Typing Indicator
+// ─────────────────────────────────────────────────────────
 
 function TypingIndicator() {
   return (
@@ -394,6 +911,10 @@ const isCouncilMode = (content) =>
   content?.toLowerCase().includes('moderator') ||
   content?.toLowerCase().includes('the utilitarian');
 
+// ─────────────────────────────────────────────────────────
+// Main ChatMessage Export
+// ─────────────────────────────────────────────────────────
+
 export default function ChatMessage({ message, isStreaming, isLast }) {
   const isUser = message.role === 'user';
   const isLoading = isLast && isStreaming && !message.content;
@@ -403,7 +924,7 @@ export default function ChatMessage({ message, isStreaming, isLast }) {
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}
+        style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}
       >
         <div style={{ maxWidth: '82%', display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, flexDirection: 'row-reverse' }}>
@@ -418,7 +939,7 @@ export default function ChatMessage({ message, isStreaming, isLast }) {
             <div style={{
               padding: '12px 16px', borderRadius: 14, borderTopRightRadius: 4,
               background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-              fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.7, maxWidth: '100%',
+              fontSize: 13.5, color: 'var(--text-primary)', lineHeight: 1.7, maxWidth: '100%',
             }}>
               {message.content}
             </div>
@@ -437,7 +958,7 @@ export default function ChatMessage({ message, isStreaming, isLast }) {
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      style={{ marginBottom: 16 }}
+      style={{ marginBottom: 20 }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
         {/* Avatar */}
@@ -479,7 +1000,7 @@ export default function ChatMessage({ message, isStreaming, isLast }) {
             {isLoading ? (
               <TypingIndicator />
             ) : message.content ? (
-              <div style={{ padding: '16px' }}>
+              <div style={{ padding: '18px' }}>
                 {council
                   ? <CouncilAnalysis text={message.content} />
                   : <StandardAnalysis text={message.content} />

@@ -36,7 +36,7 @@ let toastCounter = 0;
 
 function AppInner() {
   const { user, logout } = useAuth();
-  if (!user) return <AuthPage />;
+
   // ── Core state ──────────────────────────────────────────
   const [messages,          setMessages]         = useState([]);
   const [sessions,          setSessions]         = useState(loadSessions);
@@ -53,6 +53,9 @@ function AppInner() {
   const [cmdOpen,           setCmdOpen]          = useState(false);
   const [toasts,            setToasts]           = useState([]);
   const abortRef = useRef(null);
+
+  // ── Auth guard ──────────────────────────────────────────
+  // Rendered in JSX below (not an early return) to avoid Rules of Hooks violations.
 
   // ── Dark mode ───────────────────────────────────────────
   useEffect(() => {
@@ -244,6 +247,8 @@ function AppInner() {
 
   return (
     <div className="app-shell flex h-screen overflow-hidden font-sans">
+      {!user && <AuthPage />}
+      {user && <>
       <a href="#main-content" className="skip-to-content">
         Skip to main content
       </a>
@@ -410,6 +415,7 @@ function AppInner() {
 
       {/* Toasts */}
       <Toast toasts={toasts} onDismiss={dismissToast} />
+      </>}
     </div>
   );
 }
