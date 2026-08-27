@@ -46,7 +46,7 @@ function AppInner() {
   const [providerStatus,    setProviderStatus]   = useState({ groq: true, xai: false, huggingface: false, openai: false, anthropic: false, gemini: false });
   const [sidebarOpen,       setSidebarOpen]      = useState(false);
   const [sidebarCollapsed,  setSidebarCollapsed] = useState(loadCollapsed);
-  const [focusActive,       setFocusActive]      = useState(false);
+
   const [error,             setError]            = useState(null);
   const [activeView,        setActiveView]       = useState('home');
   const [darkMode,          setDarkMode]         = useState(loadDark);
@@ -246,7 +246,7 @@ function AppInner() {
   };
 
   return (
-    <div className="app-shell flex h-screen overflow-hidden font-sans">
+    <div className="app-shell flex h-screen w-full min-w-0 overflow-hidden font-sans">
       {!user && <AuthPage />}
       {user && <>
       <a href="#main-content" className="skip-to-content">
@@ -271,12 +271,11 @@ function AppInner() {
       {/* Main Workspace */}
       <div className="workspace">
         <TopNav
-          darkMode={darkMode}
-          onToggleDark={() => setDarkMode(d => !d)}
           onOpenPalette={() => setCmdOpen(true)}
           onNavigate={navigate}
           onToggleSidebar={() => setSidebarOpen(o => !o)}
           sidebarOpen={sidebarOpen}
+          activeView={activeView}
         />
 
         {/* View Container */}
@@ -303,14 +302,18 @@ function AppInner() {
             {/* CHAT */}
             {activeView === 'chat' && (
               <div className="flex flex-1 min-h-0 min-w-0">
-                <div className={`flex flex-col flex-1 min-w-0 ${focusActive ? 'max-w-5xl mx-auto' : ''}`}>
+                <div className="flex flex-col flex-1 min-w-0">
                   {messages.length === 0
                     ? <WelcomeScreen onExample={(text, council, frameworkKey) => sendMessage(text, council, [], 'standard', frameworkKey)} />
                     : <ChatWindow messages={messages} isStreaming={isStreaming} />
                   }
 
                   {error && (
-                    <div className="px-4 py-2 flex items-center gap-2 text-xs text-danger bg-danger/5 border-t border-danger/20">
+                    <div style={{
+                      padding: '6px 16px', display: 'flex', alignItems: 'center',
+                      gap: 6, fontSize: 12, color: 'var(--red)',
+                      background: 'var(--red-dim)', borderTop: '1px solid var(--red)',
+                    }}>
                       <span>⚠</span>
                       <span>{error}</span>
                     </div>
@@ -323,9 +326,7 @@ function AppInner() {
                   />
                 </div>
 
-                {!focusActive && (
-                  <RightPanel messages={messages} onNavigate={navigate} />
-                )}
+                <RightPanel messages={messages} />
               </div>
             )}
 
@@ -389,21 +390,7 @@ function AppInner() {
           </motion.main>
         </AnimatePresence>
 
-        {/* Compliance & Regulatory Disclaimer Bar (EU AI Act Art 50 & Legal Shield) */}
-        <footer style={{
-          flexShrink: 0, padding: '6px 16px', background: 'var(--bg-card)',
-          borderTop: '1px solid var(--border)', fontSize: 10, color: 'var(--text-muted)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12
-        }}>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            <strong>AI Transparency & Legal Disclaimer:</strong> Ethics Critic uses AI models (Groq / Llama-3.3) to generate non-binding ethical analyses for research and deliberation. Does not constitute legal, medical, or financial advice.
-          </div>
-          <div style={{ flexShrink: 0, display: 'flex', gap: 12, fontWeight: 600 }}>
-            <span style={{ color: 'var(--text-secondary)' }}>EU AI Act Compliant</span>
-            <span>•</span>
-            <span style={{ color: 'var(--text-secondary)' }}>WCAG 2.1 AA</span>
-          </div>
-        </footer>
+
       </div>
 
       {/* Command Palette */}

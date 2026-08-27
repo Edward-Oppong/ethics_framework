@@ -17,7 +17,7 @@ export default function ChatWindow({ messages, isStreaming }) {
       className="page-view"
       style={{ overflowY: 'auto', padding: '24px 24px' }}
     >
-      <div style={{ maxWidth: 860, margin: '0 auto' }}>
+      <div style={{ maxWidth: 1100, width: '100%', margin: '0 auto' }}>
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <ChatMessage

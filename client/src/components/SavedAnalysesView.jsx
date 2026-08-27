@@ -36,7 +36,7 @@ export default function SavedAnalysesView({ onNavigate }) {
   return (
     <div className="page-view">
       <div className="page-scroll">
-        <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%' }}>
 
           <div>
             <h1 className="font-serif" style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-primary)' }}>Saved Analyses</h1>

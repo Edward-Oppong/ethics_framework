@@ -119,7 +119,7 @@ export default function SettingsView({ provider, providerStatus, onProviderChang
   return (
     <div className="page-view">
       <div className="page-scroll">
-        <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 40 }}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 40 }}>
 
           {/* Page Header */}
           <div>

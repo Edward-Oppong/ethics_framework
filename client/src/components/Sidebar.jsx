@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
-  Scale, Home, MessageSquare, BookOpen, Brain, Grid, Lightbulb,
-  BarChart2, Star, FolderOpen, Settings, Plus, Trash2,
-  ChevronDown, ChevronRight, Search, User, Moon, Sun,
-  ChevronLeft, Shield, TrendingUp, Users, LogOut
+  Home, MessageSquare, BookOpen, Brain,
+  TrendingUp, Grid, Star, FolderOpen, Settings,
+  Plus, Trash2, ChevronDown, ChevronRight, Search,
+  Moon, Sun, ChevronLeft, Users, LogOut,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -12,39 +12,39 @@ const NAV_SECTIONS = [
   {
     label: null,
     items: [
-      { id: 'home',       label: 'Dashboard',          icon: <Home size={15} /> },
-      { id: 'chat',       label: 'Ethics Assistant',   icon: <MessageSquare size={15} />, badge: 'HF Models' },
-    ]
+      { id: 'home', label: 'Dashboard',        icon: Home },
+      { id: 'chat', label: 'Ethics Assistant', icon: MessageSquare },
+    ],
   },
   {
-    label: 'Core Analysis Tools',
+    label: 'Analysis',
     items: [
-      { id: 'council',    label: 'Ethics Council',     icon: <Users size={15} />, badge: 'Debate' },
-      { id: 'frameworks', label: 'Ethical Frameworks', icon: <BookOpen size={15} /> },
-      { id: 'analyzer',   label: 'Decision Analyzer',  icon: <Brain size={15} /> },
-      { id: 'comparison', label: 'Compare Frameworks', icon: <TrendingUp size={15} /> },
-      { id: 'cases',      label: 'Case Studies',       icon: <Grid size={15} /> },
-    ]
+      { id: 'council',    label: 'Ethics Council',     icon: Users },
+      { id: 'frameworks', label: 'Frameworks',         icon: BookOpen },
+      { id: 'analyzer',   label: 'Decision Analyzer',  icon: Brain },
+      { id: 'comparison', label: 'Compare',            icon: TrendingUp },
+      { id: 'cases',      label: 'Case Studies',       icon: Grid },
+    ],
   },
   {
-    label: 'Library & Config',
+    label: 'Library',
     items: [
-      { id: 'saved',    label: 'Saved Analyses', icon: <Star size={15} /> },
-      { id: 'history',  label: 'Inquiry History',icon: <FolderOpen size={15} /> },
-      { id: 'settings', label: 'Settings & Models', icon: <Settings size={15} /> },
-    ]
-  }
+      { id: 'saved',    label: 'Saved Analyses', icon: Star },
+      { id: 'history',  label: 'History',        icon: FolderOpen },
+      { id: 'settings', label: 'Settings',       icon: Settings },
+    ],
+  },
 ];
 
 export default function Sidebar({
   open, collapsed, onToggleCollapse,
   sessions, activeId, onNewChat, onLoad, onDelete,
-  activeView, onNavigate, darkMode, onToggleDark
+  activeView, onNavigate, darkMode, onToggleDark,
 }) {
   const { user, logout } = useAuth();
-  const [search, setSearch] = useState('');
+  const [search, setSearch]         = useState('');
   const [historyOpen, setHistoryOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile]     = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -53,8 +53,8 @@ export default function Sidebar({
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  const filtered = sessions.filter(s =>
-    s.title.toLowerCase().includes(search.toLowerCase())
+  const filtered  = sessions.filter(s =>
+    s.title.toLowerCase().includes(search.toLowerCase()),
   );
   const showLabel = !collapsed || isMobile;
 
@@ -63,8 +63,8 @@ export default function Sidebar({
       {/* Mobile backdrop */}
       {isMobile && open && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 40 }}
           onClick={onToggleCollapse}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40, backdropFilter: 'blur(2px)' }}
         />
       )}
 
@@ -78,46 +78,72 @@ export default function Sidebar({
         ].join(' ')}
         style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
       >
-        {/* Brand Header */}
+        {/* ── Brand Header ── */}
         <div style={{
           flexShrink: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: showLabel ? 'space-between' : 'center',
-          padding: '0 16px',
-          height: 52,
+          padding: '0 12px',
+          height: 48,
           borderBottom: '1px solid var(--border)',
         }}>
           {showLabel ? (
             <button
               onClick={() => onNavigate('home')}
-              style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'none', border: 'none', cursor: 'pointer', minWidth: 0 }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 9,
+                background: 'none', border: 'none', cursor: 'pointer', minWidth: 0,
+              }}
             >
+              {/* Gradient icon mark */}
               <div style={{
-                width: 24, height: 24, borderRadius: 6,
-                background: 'var(--accent)', color: 'var(--bg-card)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                fontWeight: 700
+                width: 26, height: 26, borderRadius: 7,
+                background: 'var(--accent-gradient)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0, boxShadow: '0 2px 8px rgba(99,102,241,0.35)',
               }}>
-                <Scale size={13} />
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3v3m0 12v3M3 12h3m12 0h3"/><circle cx="12" cy="12" r="4"/>
+                </svg>
               </div>
-              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{
+                fontSize: 13.5, fontWeight: 800, letterSpacing: '-0.025em',
+                color: 'var(--text-primary)',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
                 Ethics Critic
               </span>
             </button>
           ) : (
-            <div style={{
-              width: 24, height: 24, borderRadius: 6,
-              background: 'var(--accent)', color: 'var(--bg-card)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <Scale size={13} />
-            </div>
+            <button
+              onClick={() => onNavigate('home')}
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+              title="Dashboard"
+            >
+              <div style={{
+                width: 26, height: 26, borderRadius: 7,
+                background: 'var(--accent-gradient)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(99,102,241,0.35)',
+              }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3v3m0 12v3M3 12h3m12 0h3"/><circle cx="12" cy="12" r="4"/>
+                </svg>
+              </div>
+            </button>
           )}
+
           {showLabel && (
             <button
               onClick={onToggleCollapse}
-              style={{ padding: 4, borderRadius: 6, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', flexShrink: 0 }}
+              title="Collapse sidebar"
+              style={{
+                padding: 4, borderRadius: 6, background: 'none',
+                border: 'none', cursor: 'pointer',
+                color: 'var(--text-muted)', flexShrink: 0,
+                display: 'flex', alignItems: 'center',
+              }}
               onMouseOver={e => { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
               onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)'; }}
             >
@@ -126,62 +152,73 @@ export default function Sidebar({
           )}
         </div>
 
-        {/* New Action */}
+        {/* ── New Analysis Button ── */}
         <div style={{ flexShrink: 0, padding: '10px 10px 4px' }}>
           <button
             onClick={() => { onNewChat(); onNavigate('chat'); }}
             style={{
               width: '100%', display: 'flex', alignItems: 'center',
               justifyContent: showLabel ? 'flex-start' : 'center',
-              gap: 8, padding: '7px 10px', borderRadius: 6,
+              gap: 8, padding: '7px 10px', borderRadius: 7,
               background: 'var(--bg-card)', color: 'var(--text-primary)',
               border: '1px solid var(--border)',
-              fontSize: 12, fontWeight: 600, cursor: 'pointer',
+              fontSize: 12.5, fontWeight: 600, cursor: 'pointer',
               boxShadow: 'var(--shadow-sm)',
               transition: 'all 0.12s ease',
             }}
-            onMouseOver={e => e.currentTarget.style.borderColor = 'var(--border-strong)'}
-            onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+            onMouseOver={e => {
+              e.currentTarget.style.borderColor = 'var(--indigo)';
+              e.currentTarget.style.boxShadow = 'var(--glow)';
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+            }}
           >
             <Plus size={14} style={{ flexShrink: 0 }} />
             {showLabel && <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>New Analysis</span>}
           </button>
         </div>
 
-        {/* Navigation List */}
-        <nav style={{ flex: '1 1 0%', minHeight: 0, overflowY: 'auto', overflowX: 'hidden', padding: '6px 8px', display: 'flex', flexDirection: 'column' }}>
+        {/* ── Navigation ── */}
+        <nav style={{
+          flex: '1 1 0%', minHeight: 0,
+          overflowY: 'auto', overflowX: 'hidden',
+          padding: '4px 8px', display: 'flex', flexDirection: 'column',
+        }}>
           {NAV_SECTIONS.map((section, si) => (
-            <div key={si} style={{ marginBottom: 12 }}>
+            <div key={si} style={{ marginBottom: 10 }}>
               {section.label && showLabel && (
-                <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)', padding: '6px 8px 4px' }}>
+                <div style={{
+                  fontSize: 10, fontWeight: 700, color: 'var(--text-muted)',
+                  padding: '8px 8px 3px', letterSpacing: '0.06em', textTransform: 'uppercase',
+                }}>
                   {section.label}
                 </div>
               )}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {section.items.map(item => {
                   const isActive = activeView === item.id;
+                  const Icon = item.icon;
                   return (
                     <button
                       key={item.id}
                       onClick={() => onNavigate(item.id)}
                       title={!showLabel ? item.label : undefined}
                       style={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
+                        width: '100%', display: 'flex', alignItems: 'center',
                         justifyContent: showLabel ? 'flex-start' : 'center',
-                        gap: 10,
-                        padding: showLabel ? '6px 8px' : '6px 0',
-                        borderRadius: 6,
-                        border: 'none',
+                        gap: 9, padding: showLabel ? '6px 8px' : '6px 0',
+                        borderRadius: 7, border: 'none',
                         background: isActive ? 'var(--bg-card)' : 'transparent',
                         color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                        fontSize: 12,
-                        fontWeight: isActive ? 600 : 500,
-                        cursor: 'pointer',
-                        textAlign: 'left',
+                        fontSize: 12.5, fontWeight: isActive ? 600 : 500,
+                        cursor: 'pointer', textAlign: 'left',
                         transition: 'all 0.1s ease',
                         boxShadow: isActive ? 'var(--shadow-sm)' : 'none',
+                        /* Linear-style left accent */
+                        borderLeft: isActive ? '2px solid var(--indigo)' : '2px solid transparent',
+                        paddingLeft: showLabel ? (isActive ? '6px' : '8px') : undefined,
                       }}
                       onMouseOver={e => {
                         if (!isActive) {
@@ -196,17 +233,15 @@ export default function Sidebar({
                         }
                       }}
                     >
-                      <span style={{ color: isActive ? 'var(--text-primary)' : 'var(--text-muted)', flexShrink: 0, display: 'flex' }}>
-                        {item.icon}
+                      <span style={{
+                        color: isActive ? 'var(--indigo)' : 'var(--text-muted)',
+                        flexShrink: 0, display: 'flex',
+                      }}>
+                        <Icon size={14} />
                       </span>
                       {showLabel && (
                         <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {item.label}
-                        </span>
-                      )}
-                      {showLabel && item.badge && (
-                        <span style={{ fontSize: 9, fontWeight: 600, padding: '1px 5px', borderRadius: 4, background: 'var(--accent-light)', color: 'var(--text-primary)', flexShrink: 0 }}>
-                          {item.badge}
                         </span>
                       )}
                     </button>
@@ -216,24 +251,39 @@ export default function Sidebar({
             </div>
           ))}
 
-          {/* Recent Inquiries */}
+          {/* ── Recent Inquiries ── */}
           {showLabel && (
             <div style={{ marginTop: 'auto', paddingTop: 8, borderTop: '1px solid var(--border)' }}>
               <button
                 onClick={() => setHistoryOpen(h => !h)}
-                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 8px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, fontWeight: 600, color: 'var(--text-muted)' }}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', padding: '4px 8px',
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 10, fontWeight: 700, color: 'var(--text-muted)',
+                  letterSpacing: '0.06em', textTransform: 'uppercase',
+                }}
               >
-                <span>Recent Inquiries</span>
+                <span>Recent</span>
                 {historyOpen ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
               </button>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 8px', margin: '4px 0 6px', borderRadius: 6, background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '4px 8px', margin: '4px 0 6px',
+                borderRadius: 6, background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+              }}>
                 <Search size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                 <input
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  placeholder="Filter..."
-                  style={{ flex: 1, minWidth: 0, background: 'transparent', border: 'none', outline: 'none', fontSize: 11, color: 'var(--text-primary)' }}
+                  placeholder="Filter…"
+                  style={{
+                    flex: 1, minWidth: 0, background: 'transparent',
+                    border: 'none', outline: 'none',
+                    fontSize: 11, color: 'var(--text-primary)',
+                  }}
                 />
               </div>
 
@@ -246,26 +296,35 @@ export default function Sidebar({
                     style={{ overflow: 'hidden' }}
                   >
                     {filtered.length === 0 ? (
-                      <div style={{ padding: '6px 8px', fontSize: 11, color: 'var(--text-muted)' }}>No history yet</div>
+                      <div style={{ padding: '6px 8px', fontSize: 11, color: 'var(--text-muted)' }}>
+                        No history yet
+                      </div>
                     ) : filtered.slice(0, 5).map(s => (
                       <div
                         key={s.id}
                         onClick={() => { onLoad(s.id); onNavigate('chat'); }}
                         style={{
-                          display: 'flex', alignItems: 'center', gap: 8, padding: '5px 8px', borderRadius: 6,
+                          display: 'flex', alignItems: 'center', gap: 8,
+                          padding: '5px 8px', borderRadius: 6,
                           cursor: 'pointer', fontSize: 11,
                           color: activeId === s.id ? 'var(--text-primary)' : 'var(--text-secondary)',
                           background: activeId === s.id ? 'var(--bg-card)' : 'transparent',
-                          transition: 'background 0.1s'
+                          transition: 'background 0.1s',
                         }}
                         onMouseOver={e => { if (activeId !== s.id) e.currentTarget.style.background = 'var(--bg-card-hover)'; }}
                         onMouseOut={e => { if (activeId !== s.id) e.currentTarget.style.background = 'transparent'; }}
                       >
                         <MessageSquare size={11} style={{ flexShrink: 0, color: 'var(--text-muted)' }} />
-                        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.title}</span>
+                        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {s.title}
+                        </span>
                         <button
                           onClick={e => { e.stopPropagation(); onDelete(s.id); }}
-                          style={{ flexShrink: 0, padding: 2, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                          style={{
+                            flexShrink: 0, padding: 2, background: 'none',
+                            border: 'none', cursor: 'pointer', color: 'var(--text-muted)',
+                            display: 'flex', alignItems: 'center',
+                          }}
                           onMouseOver={e => e.currentTarget.style.color = '#ef4444'}
                           onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}
                         >
@@ -280,30 +339,38 @@ export default function Sidebar({
           )}
         </nav>
 
-        {/* Footer Profile & Theme Toggle */}
-        <div style={{ flexShrink: 0, borderTop: '1px solid var(--border)', padding: '8px 8px' }}>
+        {/* ── Footer: User + Controls ── */}
+        <div style={{ flexShrink: 0, borderTop: '1px solid var(--border)', padding: '8px' }}>
           <div style={{
             display: 'flex', alignItems: 'center',
             justifyContent: showLabel ? 'space-between' : 'center',
-            padding: '6px 8px', borderRadius: 6,
+            padding: '6px 8px', borderRadius: 7,
             background: 'var(--bg-card)', border: '1px solid var(--border)',
-            boxShadow: 'var(--shadow-sm)'
+            boxShadow: 'var(--shadow-sm)',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+              {/* Avatar with gradient */}
               <div style={{
-                width: 22, height: 22, borderRadius: 6,
-                background: 'var(--accent)', color: 'var(--bg-card)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                fontSize: 11, fontWeight: 700
+                width: 24, height: 24, borderRadius: 7,
+                background: 'var(--accent-gradient)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0, fontSize: 10.5, fontWeight: 800, color: '#fff',
+                boxShadow: '0 1px 4px rgba(99,102,241,0.3)',
               }}>
-                {user?.name?.charAt(0) || 'U'}
+                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
               </div>
               {showLabel && (
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{
+                    fontSize: 11.5, fontWeight: 700, color: 'var(--text-primary)',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
                     {user?.name || 'User'}
                   </div>
-                  <div style={{ fontSize: 9, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{
+                    fontSize: 9.5, color: 'var(--text-muted)',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
                     {user?.role || 'Scholar'}
                   </div>
                 </div>
@@ -311,15 +378,15 @@ export default function Sidebar({
             </div>
 
             {showLabel && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <button
                   onClick={onToggleDark}
+                  title={darkMode ? 'Light mode' : 'Dark mode'}
                   style={{
-                    padding: 4, borderRadius: 6, background: 'none',
+                    padding: 5, borderRadius: 6, background: 'none',
                     border: 'none', cursor: 'pointer',
-                    color: 'var(--text-muted)', display: 'flex', alignItems: 'center'
+                    color: 'var(--text-muted)', display: 'flex', alignItems: 'center',
                   }}
-                  title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                   onMouseOver={e => e.currentTarget.style.color = 'var(--text-primary)'}
                   onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}
                 >
@@ -327,12 +394,12 @@ export default function Sidebar({
                 </button>
                 <button
                   onClick={logout}
-                  style={{
-                    padding: 4, borderRadius: 6, background: 'none',
-                    border: 'none', cursor: 'pointer',
-                    color: 'var(--text-muted)', display: 'flex', alignItems: 'center'
-                  }}
                   title="Sign Out"
+                  style={{
+                    padding: 5, borderRadius: 6, background: 'none',
+                    border: 'none', cursor: 'pointer',
+                    color: 'var(--text-muted)', display: 'flex', alignItems: 'center',
+                  }}
                   onMouseOver={e => e.currentTarget.style.color = '#ef4444'}
                   onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}
                 >
@@ -345,7 +412,14 @@ export default function Sidebar({
           {!showLabel && (
             <button
               onClick={onToggleCollapse}
-              style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '6px 0', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', marginTop: 4 }}
+              title="Expand sidebar"
+              style={{
+                width: '100%', display: 'flex', justifyContent: 'center',
+                padding: '6px 0', background: 'none', border: 'none',
+                cursor: 'pointer', color: 'var(--text-muted)', marginTop: 4,
+              }}
+              onMouseOver={e => e.currentTarget.style.color = 'var(--text-primary)'}
+              onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}
             >
               <ChevronRight size={14} />
             </button>

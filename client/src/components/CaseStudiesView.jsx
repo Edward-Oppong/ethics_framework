@@ -71,7 +71,7 @@ export default function CaseStudiesView({ onSendToChat }) {
   return (
     <div className="page-view">
       <div className="page-scroll">
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%' }}>
 
           {/* Header */}
           <div>

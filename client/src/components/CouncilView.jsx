@@ -266,7 +266,7 @@ Deliver your council opening statement on this dilemma: "${userPrompt}". Be dire
   return (
     <div className="page-view">
       <div className="page-scroll">
-        <div style={{ maxWidth: 860, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 40 }}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 40 }}>
 
           {/* Header */}
           <div>
