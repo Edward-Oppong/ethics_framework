@@ -10,11 +10,11 @@ import {
 } from 'recharts';
 
 const FRAMEWORKS = [
-  { id: 'utilitarianism', name: 'Utilitarianism',    icon: '⚖️', color: '#6366f1' },
+  { id: 'utilitarianism', name: 'Utilitarianism',    icon: '⚖️', color: 'var(--color-terracotta)' },
   { id: 'deontology',     name: 'Deontology',         icon: '📜', color: '#0ea5e9' },
   { id: 'virtue',         name: 'Virtue Ethics',      icon: '🛡️', color: '#10b981' },
   { id: 'care',           name: 'Care Ethics',         icon: '🤝', color: '#f59e0b' },
-  { id: 'rights',         name: 'Rights-Based',        icon: '🔑', color: '#ef4444' },
+  { id: 'rights',         name: 'Rights-Based',        icon: '🔑', color: 'var(--color-rust)' },
   { id: 'justice',        name: 'Justice & Fairness',  icon: '🏛️', color: '#8b5cf6' },
 ];
 
@@ -327,13 +327,13 @@ export default function ComparisonView({ provider, onSendToChat }) {
               <button
                 onClick={runComparison}
                 disabled={!dilemma.trim() || running}
+                className={!dilemma.trim() || running ? '' : 'btn-primary'}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
-                  padding: '10px 20px', borderRadius: 8, border: 'none',
-                  background: !dilemma.trim() || running ? 'var(--bg-surface)' : 'var(--accent)',
-                  color: !dilemma.trim() || running ? 'var(--text-muted)' : 'var(--bg-card)',
+                  padding: '10px 22px', borderRadius: 8, border: 'none',
+                  background: !dilemma.trim() || running ? 'var(--bg-surface)' : 'var(--accent-gradient)',
+                  color: !dilemma.trim() || running ? 'var(--text-muted)' : '#ffffff',
                   fontSize: 13, fontWeight: 700, cursor: !dilemma.trim() || running ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.15s'
                 }}
               >
                 {running ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Analyzing…</> : <><Send size={14} /> Run Comparison</>}
@@ -443,11 +443,12 @@ export default function ComparisonView({ provider, onSendToChat }) {
                   <button
                     onClick={runFollowUp}
                     disabled={!followUp.trim() || running}
+                    className={!followUp.trim() || running ? '' : 'btn-primary'}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px',
                       borderRadius: 8, border: 'none',
-                      background: !followUp.trim() ? 'var(--bg-surface)' : 'var(--accent)',
-                      color: !followUp.trim() ? 'var(--text-muted)' : 'var(--bg-card)',
+                      background: !followUp.trim() ? 'var(--bg-surface)' : 'var(--accent-gradient)',
+                      color: !followUp.trim() ? 'var(--text-muted)' : '#ffffff',
                       fontSize: 13, fontWeight: 700, cursor: !followUp.trim() ? 'not-allowed' : 'pointer'
                     }}
                   >
@@ -460,15 +461,12 @@ export default function ComparisonView({ provider, onSendToChat }) {
               {done && (
                 <button
                   onClick={() => onSendToChat(`Run a full Council Mode debate on this dilemma: "${dilemma}". We have initial verdicts — now debate the tensions between frameworks.`)}
+                  className="btn-primary"
                   style={{
                     width: '100%', padding: '13px', borderRadius: 10,
-                    background: 'var(--accent)', color: 'var(--bg-card)',
-                    fontSize: 13, fontWeight: 700, border: 'none', cursor: 'pointer',
+                    fontSize: 13, fontWeight: 700, cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                    transition: 'opacity 0.15s'
                   }}
-                  onMouseOver={e => e.currentTarget.style.opacity = '0.9'}
-                  onMouseOut={e => e.currentTarget.style.opacity = '1'}
                 >
                   <Scale size={15} />
                   Send to Council Mode — Full Multi-Framework Debate

@@ -8,17 +8,13 @@ import {
 
 const NAV_ROUTES = [
   { id: 'home',       label: 'Dashboard',          icon: <Layout size={16} /> },
-  { id: 'chat',       label: 'AI Ethics Chat',     icon: <MessageSquare size={16} /> },
-  { id: 'frameworks', label: 'Ethical Frameworks', icon: <BookOpen size={16} /> },
+  { id: 'chat',       label: 'Ethics Assistant',   icon: <MessageSquare size={16} /> },
+  { id: 'council',    label: 'Ethics Council',     icon: <Scale size={16} /> },
   { id: 'analyzer',   label: 'Decision Analyzer',  icon: <Brain size={16} /> },
   { id: 'comparison', label: 'Compare Frameworks', icon: <TrendingUp size={16} /> },
-  { id: 'risk',       label: 'Ethics Risk Board',  icon: <Shield size={16} /> },
+  { id: 'frameworks', label: 'Framework Library',  icon: <BookOpen size={16} /> },
   { id: 'cases',      label: 'Case Studies',       icon: <Grid size={16} /> },
-  { id: 'learning',   label: 'Learning Hub',       icon: <Lightbulb size={16} /> },
-  { id: 'analytics',  label: 'Analytics',          icon: <BarChart2 size={16} /> },
-  { id: 'saved',      label: 'Saved Analyses',     icon: <Star size={16} /> },
-  { id: 'history',    label: 'History',            icon: <FolderOpen size={16} /> },
-  { id: 'profile',    label: 'Profile',            icon: <User size={16} /> },
+  { id: 'history',    label: 'History & Sessions', icon: <FolderOpen size={16} /> },
   { id: 'settings',   label: 'Settings',           icon: <Settings size={16} /> },
 ];
 

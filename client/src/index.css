@@ -3,38 +3,44 @@
 
 /* ── Design Tokens ── */
 :root {
-  --bg-primary:     #fafafa;
-  --bg-surface:     #f4f4f5;
+  /* Core Palette Tokens */
+  --color-slate:      #55565b;
+  --color-sand:       #eae5d9;
+  --color-terracotta: #d64527;
+  --color-rust:       #912d22;
+
+  --bg-primary:     #f8f7f4;
+  --bg-surface:     #eae5d9;
   --bg-card:        #ffffff;
-  --bg-card-hover:  #f9f9fb;
-  --bg-elevated:    #f0f0f2;
+  --bg-card-hover:  #fbfaf7;
+  --bg-elevated:    #ede9e0;
 
-  --text-primary:   #09090b;
-  --text-secondary: #52525b;
-  --text-muted:     #a1a1aa;
+  --text-primary:   #222326;
+  --text-secondary: #55565b;
+  --text-muted:     #8f8e94;
 
-  --border:         #e4e4e7;
-  --border-strong:  #d1d1d8;
+  --border:         #ded9cd;
+  --border-strong:  #c7c0b1;
 
-  --accent:         #18181b;
-  --accent-blue:    #2563eb;
-  --accent-light:   #f4f4f5;
+  --accent:         #d64527;
+  --accent-blue:    #d64527;
+  --accent-light:   rgba(214, 69, 39, 0.08);
   --accent-text:    #ffffff;
 
-  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --accent-gradient: linear-gradient(135deg, #d64527 0%, #912d22 100%);
 
   --amber:          #d97706;
   --amber-dim:      rgba(217, 119, 6, 0.09);
   --emerald:        #059669;
   --emerald-dim:    rgba(5, 150, 105, 0.09);
-  --indigo:         #4f46e5;
-  --indigo-dim:     rgba(79, 70, 229, 0.09);
+  --indigo:         #d64527;
+  --indigo-dim:     rgba(214, 69, 39, 0.09);
   --cyan:           #0891b2;
   --cyan-dim:       rgba(8, 145, 178, 0.09);
-  --red:            #dc2626;
-  --red-dim:        rgba(220, 38, 38, 0.09);
-  --violet:         #7c3aed;
-  --violet-dim:     rgba(124, 58, 237, 0.09);
+  --red:            #912d22;
+  --red-dim:        rgba(145, 45, 34, 0.09);
+  --violet:         #8c3a48;
+  --violet-dim:     rgba(140, 58, 72, 0.09);
 
   --sidebar-w:           240px;
   --sidebar-w-collapsed: 56px;
@@ -43,50 +49,56 @@
   --radius-md:  8px;
   --radius-lg:  12px;
 
-  --shadow-sm:  0 1px 2px 0 rgba(0,0,0,0.05);
-  --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
-  --shadow-lg:  0 12px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
-  --glow:       0 0 0 3px rgba(99, 102, 241, 0.18);
+  --shadow-sm:  0 1px 2px 0 rgba(85, 86, 91, 0.06);
+  --shadow-md:  0 4px 12px rgba(85, 86, 91, 0.08), 0 1px 3px rgba(85, 86, 91, 0.05);
+  --shadow-lg:  0 12px 32px rgba(85, 86, 91, 0.12), 0 2px 8px rgba(85, 86, 91, 0.06);
+  --glow:       0 0 0 3px rgba(214, 69, 39, 0.22);
 }
 
 .dark {
-  --bg-primary:     #0a0a0f;
-  --bg-surface:     #111118;
-  --bg-card:        #17171f;
-  --bg-card-hover:  #1e1e28;
-  --bg-elevated:    #1e1e28;
+  /* Core Palette Tokens */
+  --color-slate:      #8a8c94;
+  --color-sand:       #322e2b;
+  --color-terracotta: #e05a3c;
+  --color-rust:       #b84335;
 
-  --text-primary:   #ededf0;
-  --text-secondary: #9898a8;
-  --text-muted:     #55555f;
+  --bg-primary:     #161514;
+  --bg-surface:     #211e1c;
+  --bg-card:        #292523;
+  --bg-card-hover:  #332e2b;
+  --bg-elevated:    #332e2b;
 
-  --border:         #25252f;
-  --border-strong:  #38383f;
+  --text-primary:   #f4f1eb;
+  --text-secondary: #beb9af;
+  --text-muted:     #7d7870;
 
-  --accent:         #ededf0;
-  --accent-blue:    #5b8dfa;
-  --accent-light:   #1e1e28;
-  --accent-text:    #0a0a0f;
+  --border:         #3b3632;
+  --border-strong:  #4f4842;
 
-  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a78bfa 100%);
+  --accent:         #e05a3c;
+  --accent-blue:    #e05a3c;
+  --accent-light:   rgba(224, 90, 60, 0.14);
+  --accent-text:    #ffffff;
+
+  --accent-gradient: linear-gradient(135deg, #e05a3c 0%, #b84335 100%);
 
   --amber:          #f59e0b;
   --amber-dim:      rgba(245, 158, 11, 0.12);
   --emerald:        #10b981;
   --emerald-dim:    rgba(16, 185, 129, 0.12);
-  --indigo:         #818cf8;
-  --indigo-dim:     rgba(129, 140, 248, 0.12);
+  --indigo:         #e05a3c;
+  --indigo-dim:     rgba(224, 90, 60, 0.12);
   --cyan:           #22d3ee;
   --cyan-dim:       rgba(34, 211, 238, 0.12);
   --red:            #f87171;
   --red-dim:        rgba(248, 113, 113, 0.12);
-  --violet:         #a78bfa;
-  --violet-dim:     rgba(167, 139, 250, 0.12);
+  --violet:         #e28a96;
+  --violet-dim:     rgba(226, 138, 150, 0.12);
 
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.35);
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-lg:  0 16px 48px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4);
-  --glow:       0 0 0 3px rgba(129, 140, 248, 0.22);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.35);
+  --shadow-lg:  0 16px 48px rgba(0,0,0,0.65), 0 4px 16px rgba(0,0,0,0.45);
+  --glow:       0 0 0 3px rgba(224, 90, 60, 0.28);
 }
 
 /* ── Reset ── */
@@ -193,12 +205,12 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+  box-shadow: 0 2px 8px rgba(214, 69, 39, 0.3);
 }
 
 .btn-primary:hover {
   opacity: 0.9;
-  box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+  box-shadow: 0 4px 16px rgba(214, 69, 39, 0.4);
 }
 
 .btn-secondary {
@@ -299,3 +311,51 @@ button, input, select, textarea {
   font-family: inherit;
   font-size: inherit;
 }
+
+/* ── Interactive Cards & Badges ── */
+.card-interactive {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.18s ease,
+              box-shadow 0.18s ease;
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.badge-framework {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+@keyframes deliberate-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.98); }
+}
+
+.deliberating {
+  animation: deliberate-pulse 1.8s ease-in-out infinite;
+}
+
+.data-metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+

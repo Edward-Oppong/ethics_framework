@@ -8,12 +8,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 const FRAMEWORKS = [
-  { id: 'utilitarianism', name: 'Utilitarianism',   icon: '⚖️', color: '#6366f1', shortName: 'Utilitarian'  },
+  { id: 'utilitarianism', name: 'Utilitarianism',   icon: '⚖️', color: 'var(--color-terracotta)', shortName: 'Utilitarian'  },
   { id: 'deontology',     name: 'Deontology',        icon: '📜', color: '#0ea5e9', shortName: 'Deontologist' },
   { id: 'virtue',         name: 'Virtue Ethics',     icon: '🛡️', color: '#10b981', shortName: 'Virtue'       },
   { id: 'care',           name: 'Care Ethics',        icon: '🤝', color: '#f59e0b', shortName: 'Care'         },
-  { id: 'rights',         name: 'Rights-Based',       icon: '🔑', color: '#ef4444', shortName: 'Rights'       },
-  { id: 'justice',        name: 'Justice & Fairness', icon: '8b5cf6', shortName: 'Justice'      },
+  { id: 'rights',         name: 'Rights-Based',       icon: '🔑', color: 'var(--color-rust)', shortName: 'Rights'       },
+  { id: 'justice',        name: 'Justice & Fairness', icon: '🏛️', color: '#8b5cf6', shortName: 'Justice'      },
 ];
 
 const EXAMPLE_DILEMMAS = [
@@ -354,17 +354,18 @@ Deliver your council opening statement on this dilemma: "${userPrompt}". Be dire
                 <button
                   onClick={runCouncil}
                   disabled={!dilemma.trim() || running || selected.length < 2}
+                  className={!dilemma.trim() || running || selected.length < 2 ? '' : 'btn-primary'}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 7,
-                    padding: '10px 20px', borderRadius: 8, border: 'none',
-                    background: !dilemma.trim() || running || selected.length < 2 ? 'var(--bg-surface)' : 'var(--accent)',
-                    color: !dilemma.trim() || running || selected.length < 2 ? 'var(--text-muted)' : 'var(--bg-card)',
+                    padding: '10px 22px', borderRadius: 8, border: 'none',
+                    background: !dilemma.trim() || running || selected.length < 2 ? 'var(--bg-surface)' : 'var(--accent-gradient)',
+                    color: !dilemma.trim() || running || selected.length < 2 ? 'var(--text-muted)' : '#ffffff',
                     fontSize: 13, fontWeight: 700, cursor: !dilemma.trim() || running || selected.length < 2 ? 'not-allowed' : 'pointer',
                   }}
                 >
                   {running ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Deliberating…</> : <><Scale size={14} /> Convene Council</>}
                 </button>
-                {selected.length < 2 && <span style={{ fontSize: 11, color: '#f59e0b' }}>Select at least 2 frameworks</span>}
+                {selected.length < 2 && <span style={{ fontSize: 11, color: 'var(--amber)', fontWeight: 600 }}>Select at least 2 frameworks</span>}
               </div>
             </div>
           )}
@@ -376,7 +377,7 @@ Deliver your council opening statement on this dilemma: "${userPrompt}". Be dire
                 <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Council Session in Progress
                 </span>
-                <button onClick={reset} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-surface)', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                <button onClick={reset} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-surface)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   <RefreshCw size={11} /> New Session
                 </button>
               </div>
@@ -411,15 +412,16 @@ Deliver your council opening statement on this dilemma: "${userPrompt}". Be dire
                 <button
                   onClick={handleFollowUp}
                   disabled={!followUp.trim() || running}
+                  className={!followUp.trim() || running ? '' : 'btn-primary'}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     padding: '10px 18px', borderRadius: 8, border: 'none',
-                    background: !followUp.trim() || running ? 'var(--bg-surface)' : 'var(--accent)',
-                    color: !followUp.trim() || running ? 'var(--text-muted)' : 'var(--bg-card)',
+                    background: !followUp.trim() || running ? 'var(--bg-surface)' : 'var(--accent-gradient)',
+                    color: !followUp.trim() || running ? 'var(--text-muted)' : '#ffffff',
                     fontSize: 13, fontWeight: 700, cursor: !followUp.trim() || running ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  {running ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={13} />} Respond to Council
+                  {running ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={13} />} Respond
                 </button>
               </div>
             </div>

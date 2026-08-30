@@ -15,8 +15,6 @@ import CaseStudiesView  from './components/CaseStudiesView.jsx';
 import DashboardView    from './components/DashboardView.jsx';
 import ComparisonView   from './components/ComparisonView.jsx';
 import CouncilView      from './components/CouncilView.jsx';
-import SingleFrameworkView from './components/SingleFrameworkView.jsx';
-import SavedAnalysesView from './components/SavedAnalysesView.jsx';
 import HistoryView      from './components/HistoryView.jsx';
 import SettingsView     from './components/SettingsView.jsx';
 import CommandPalette   from './components/CommandPalette.jsx';
@@ -352,19 +350,9 @@ function AppInner() {
               <CouncilView provider={provider} />
             )}
 
-            {/* SINGLE FRAMEWORK */}
-            {activeView === 'single' && (
-              <SingleFrameworkView provider={provider} />
-            )}
-
             {/* CASE STUDIES */}
             {activeView === 'cases' && (
               <CaseStudiesView onSendToChat={startChatWithPrompt} />
-            )}
-
-            {/* SAVED ANALYSES */}
-            {activeView === 'saved' && (
-              <SavedAnalysesView onNavigate={navigate} />
             )}
 
             {/* HISTORY */}

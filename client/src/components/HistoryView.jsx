@@ -45,39 +45,39 @@ export default function HistoryView({ sessions, onLoad, onDelete, onNavigate }) 
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
+                    className="card-interactive"
                     style={{
                       display: 'flex', alignItems: 'center', gap: 16,
                       padding: '16px 20px', borderRadius: 12,
-                      background: 'var(--bg-card)', border: '1px solid var(--border)',
-                      boxShadow: 'var(--shadow-sm)', cursor: 'pointer',
-                      transition: 'all 0.15s ease'
+                      cursor: 'pointer',
                     }}
-                    onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                    onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'none'; }}
                     onClick={() => { onLoad(s.id); onNavigate('chat'); }}
                   >
-                    <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--accent-light)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <MessageSquare size={16} />
+                    <div style={{ width: 38, height: 38, borderRadius: 8, background: 'var(--accent-light)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <MessageSquare size={17} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.title}</div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, fontSize: 11, color: 'var(--text-muted)' }}>
-                        <Clock size={11} />
-                        <span>{new Date(s.updatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.title}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 5, fontSize: 11, color: 'var(--text-secondary)' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <Clock size={12} style={{ color: 'var(--text-muted)' }} />
+                          {new Date(s.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
                         <span>·</span>
-                        <span>{s.messages?.length || 0} messages</span>
+                        <span className="badge-framework">{s.messages?.length || 0} Deliberation Steps</span>
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                       <button
                         onClick={e => { e.stopPropagation(); onDelete(s.id); }}
-                        style={{ padding: 6, borderRadius: 6, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
-                        onMouseOver={e => e.currentTarget.style.color = '#ef4444'}
+                        style={{ padding: 6, borderRadius: 6, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', transition: 'color 0.15s ease' }}
+                        onMouseOver={e => e.currentTarget.style.color = 'var(--red)'}
                         onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}
+                        title="Delete session"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={15} />
                       </button>
-                      <ArrowRight size={14} style={{ color: 'var(--text-muted)' }} />
+                      <ArrowRight size={15} style={{ color: 'var(--text-muted)' }} />
                     </div>
                   </motion.div>
                 ))}

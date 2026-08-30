@@ -29,9 +29,8 @@ const NAV_SECTIONS = [
   {
     label: 'Library',
     items: [
-      { id: 'saved',    label: 'Saved Analyses', icon: Star },
-      { id: 'history',  label: 'History',        icon: FolderOpen },
-      { id: 'settings', label: 'Settings',       icon: Settings },
+      { id: 'history',  label: 'History & Sessions', icon: FolderOpen },
+      { id: 'settings', label: 'Settings',           icon: Settings },
     ],
   },
 ];
