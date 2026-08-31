@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X } from 'lucide-react';
+import { Search, Menu, X, Compass, Keyboard } from 'lucide-react';
 
 const VIEW_LABELS = {
   home:       'Dashboard',
@@ -16,7 +16,7 @@ const VIEW_LABELS = {
   settings:   'Settings',
 };
 
-export default function TopNav({ onOpenPalette, onNavigate, onToggleSidebar, sidebarOpen, activeView }) {
+export default function TopNav({ onOpenPalette, onNavigate, onToggleSidebar, sidebarOpen, activeView, onOpenShortcuts, onOpenQuiz }) {
   return (
     <header style={{
       flexShrink: 0,
@@ -96,8 +96,39 @@ export default function TopNav({ onOpenPalette, onNavigate, onToggleSidebar, sid
         }}>⌘K</kbd>
       </button>
 
-      {/* Right: spacer to balance layout */}
-      <div style={{ width: 32, flexShrink: 0 }} className="md:hidden" />
+      {/* Right: Archetype Quiz + Keyboard shortcuts */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+        <button
+          onClick={onOpenQuiz}
+          title="Ethical Archetype Finder"
+          style={{
+            padding: '5px 8px', borderRadius: 6,
+            background: 'none', border: '1px solid var(--border)',
+            cursor: 'pointer', color: 'var(--text-muted)',
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontSize: 11, fontWeight: 600,
+          }}
+          onMouseOver={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+          onMouseOut={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+        >
+          <Compass size={14} />
+          <span className="md:block" style={{ display: 'none' }}>My Archetype</span>
+        </button>
+        <button
+          onClick={onOpenShortcuts}
+          title="Keyboard shortcuts (?)"
+          style={{
+            padding: 5, borderRadius: 6,
+            background: 'none', border: 'none',
+            cursor: 'pointer', color: 'var(--text-muted)',
+            display: 'flex', alignItems: 'center',
+          }}
+          onMouseOver={e => e.currentTarget.style.color = 'var(--text-primary)'}
+          onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}
+        >
+          <Keyboard size={15} />
+        </button>
+      </div>
     </header>
   );
 }

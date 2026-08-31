@@ -1,4 +1,5 @@
-import { Scale, BookOpen, ShieldCheck, ArrowRight, Users, Sparkles } from 'lucide-react';
+import { Scale, BookOpen, ShieldCheck, ArrowRight, Users, Sparkles, Dices } from 'lucide-react';
+import { getRandomScenario } from '../utils/scenarioGenerator.js';
 
 const SUGGESTIONS = [
   {
@@ -128,13 +129,34 @@ export default function WelcomeScreen({ onExample }) {
         {/* Example Dilemma Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, textAlign: 'left' }}>
           <div style={{
-            fontSize: 10.5, fontWeight: 700, textTransform: 'uppercase',
-            letterSpacing: '0.08em', color: 'var(--text-muted)',
-            textAlign: 'center', display: 'flex', alignItems: 'center',
-            justifyContent: 'center', gap: 6,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8
           }}>
-            <Sparkles size={11} />
-            Select a dilemma to begin
+            <div style={{
+              fontSize: 10.5, fontWeight: 700, textTransform: 'uppercase',
+              letterSpacing: '0.08em', color: 'var(--text-muted)',
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              <Sparkles size={11} />
+              Select a dilemma or generate a challenge
+            </div>
+
+            <button
+              onClick={() => {
+                const s = getRandomScenario();
+                onExample(s.dilemma, false);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px',
+                borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-card)',
+                color: 'var(--accent)', fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseOver={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+              onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border)'}
+            >
+              <Dices size={13} />
+              🎲 Stump the AI (Random Scenario)
+            </button>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(330px, 1fr))', gap: 10 }}>
