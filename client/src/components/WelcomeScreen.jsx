@@ -52,12 +52,13 @@ export default function WelcomeScreen({ onExample }) {
   return (
     <div style={{
       flex: '1 1 0%', minHeight: 0, overflowY: 'auto',
-      padding: '48px 24px 32px',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      padding: '36px 24px 32px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
       width: '100%',
     }}>
       <div style={{
         maxWidth: 1040, width: '100%',
+        margin: 'auto 0',
         display: 'flex', flexDirection: 'column', gap: 32, textAlign: 'center',
       }}>
 
