@@ -19,6 +19,10 @@ import HistoryView      from './components/HistoryView.jsx';
 import SettingsView     from './components/SettingsView.jsx';
 import CommandPalette   from './components/CommandPalette.jsx';
 import Toast            from './components/Toast.jsx';
+import ShortcutsModal   from './components/ShortcutsModal.jsx';
+import ArchetypeQuizModal from './components/ArchetypeQuizModal.jsx';
+import AuditReportModal from './components/AuditReportModal.jsx';
+import { getMockResponse } from './utils/mockResponses.js';
 
 // ── persistence ────────────────────────────────────────────
 const STORAGE_KEY = 'ec_sessions_v4';
@@ -50,6 +54,10 @@ function AppInner() {
   const [darkMode,          setDarkMode]         = useState(loadDark);
   const [cmdOpen,           setCmdOpen]          = useState(false);
   const [toasts,            setToasts]           = useState([]);
+  const [showShortcuts,     setShowShortcuts]    = useState(false);
+  const [showQuiz,          setShowQuiz]         = useState(false);
+  const [showAudit,         setShowAudit]        = useState(false);
+  const [mockMode,          setMockMode]         = useState(false);
   const abortRef = useRef(null);
 
   // ── Auth guard ──────────────────────────────────────────
@@ -66,12 +74,32 @@ function AppInner() {
     localStorage.setItem(COLLAPSE_KEY, String(sidebarCollapsed));
   }, [sidebarCollapsed]);
 
-  // ── Command palette keyboard shortcut ───────────────────
+  // ── Global keyboard shortcuts ───────────────────────────
   useEffect(() => {
+    const VIEW_MAP = { '1': 'home', '2': 'chat', '3': 'comparison', '4': 'analyzer', '5': 'council', '6': 'history' };
     const handle = (e) => {
+      const tag = e.target?.tagName?.toLowerCase();
+      const isInput = tag === 'input' || tag === 'textarea' || e.target?.isContentEditable;
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setCmdOpen(o => !o);
+        return;
+      }
+      if (!isInput && e.key === '?') {
+        e.preventDefault();
+        setShowShortcuts(o => !o);
+        return;
+      }
+      if (!isInput && e.key === 'Escape') {
+        setShowShortcuts(false);
+        setShowQuiz(false);
+        setShowAudit(false);
+        setCmdOpen(false);
+        return;
+      }
+      if (!isInput && VIEW_MAP[e.key]) {
+        e.preventDefault();
+        setActiveView(VIEW_MAP[e.key]);
       }
     };
     window.addEventListener('keydown', handle);
@@ -185,6 +213,29 @@ function AppInner() {
     const ctrl = new AbortController();
     abortRef.current = ctrl;
 
+    // ── Mock / Demo Mode branch ──────────────────────────────
+    if (mockMode) {
+      const mockText = getMockResponse(userContent);
+      let i = 0;
+      const interval = setInterval(() => {
+        i += 6;
+        const chunk = mockText.slice(0, i);
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'assistant', content: chunk };
+          return updated;
+        });
+        if (i >= mockText.length) {
+          clearInterval(interval);
+          const final = [...withUser, { role: 'assistant', content: mockText }];
+          setIsStreaming(false);
+          saveSession(final);
+          addToast('⚡ Demo Mode: Simulated response loaded', 'info');
+        }
+      }, 18);
+      return;
+    }
+
     try {
       const res = await fetch('/api/chat', {
         method:  'POST',
@@ -286,6 +337,8 @@ function AppInner() {
           onToggleSidebar={() => setSidebarOpen(o => !o)}
           sidebarOpen={sidebarOpen}
           activeView={activeView}
+          onOpenShortcuts={() => setShowShortcuts(true)}
+          onOpenQuiz={() => setShowQuiz(true)}
         />
 
         {/* View Container */}
@@ -386,6 +439,8 @@ function AppInner() {
                 onProviderChange={setProvider}
                 darkMode={darkMode}
                 onToggleDark={() => setDarkMode(d => !d)}
+                mockMode={mockMode}
+                onToggleMock={() => setMockMode(m => !m)}
               />
             )}
           </motion.main>
@@ -393,6 +448,11 @@ function AppInner() {
 
 
       </div>
+
+      {/* Modals */}
+      <ShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
+      <ArchetypeQuizModal isOpen={showQuiz} onClose={() => setShowQuiz(false)} />
+      <AuditReportModal isOpen={showAudit} onClose={() => setShowAudit(false)} />
 
       {/* Command Palette */}
       <CommandPalette

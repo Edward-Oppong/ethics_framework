@@ -78,7 +78,7 @@ function Modal({ title, children, onClose }) {
   );
 }
 
-export default function SettingsView({ provider, providerStatus, onProviderChange, darkMode, onToggleDark }) {
+export default function SettingsView({ provider, providerStatus, onProviderChange, darkMode, onToggleDark, mockMode, onToggleMock }) {
   const [profile, setProfile] = useState({
     name: 'Ethics Scholar',
     email: 'scholar@ethics.ai',
@@ -188,6 +188,32 @@ export default function SettingsView({ provider, providerStatus, onProviderChang
                   <Toggle checked={item.checked} onChange={item.onChange} />
                 </div>
               ))}
+            </div>
+          </Card>
+
+          {/* Demo & Offline Mock Mode */}
+          <Card title="Demo & Offline Mock Mode" icon={<Scale size={18} />}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>Enable Instant Demo Mode</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3, lineHeight: 1.5 }}>
+                    Pre-populates rich simulated multi-framework critiques without requiring active API keys.
+                    Ideal for live demos, portfolio showcases, or offline usage.
+                  </div>
+                </div>
+                <Toggle checked={mockMode} onChange={onToggleMock} />
+              </div>
+              {mockMode && (
+                <div style={{
+                  padding: '10px 14px', borderRadius: 8,
+                  background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)',
+                  fontSize: 12, color: '#f59e0b', display: 'flex', alignItems: 'center', gap: 8
+                }}>
+                  <span>⚡</span>
+                  <span><strong>Mock Mode is active.</strong> AI responses are simulated locally. Disable to restore live LLM inference.</span>
+                </div>
+              )}
             </div>
           </Card>
 
