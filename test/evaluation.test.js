@@ -140,3 +140,38 @@ describe('Decision Analyzer Composite Scoring', () => {
     assert.strictEqual(score, 64);
   });
 });
+
+describe('Enterprise Privacy & PII Sanitizer', () => {
+  const { sanitizePII } = require('../server/security');
+
+  test('redacts email addresses', () => {
+    const raw = 'Please contact john.doe@example.com regarding patient data.';
+    const sanitized = sanitizePII(raw);
+    assert.ok(!sanitized.includes('john.doe@example.com'));
+    assert.ok(sanitized.includes('[EMAIL_REDACTED]'));
+  });
+
+  test('redacts phone numbers', () => {
+    const raw = 'Doctor emergency hotline is +1-800-555-0199 or (555) 234-5678.';
+    const sanitized = sanitizePII(raw);
+    assert.ok(!sanitized.includes('555-0199'));
+    assert.ok(sanitized.includes('[PHONE_REDACTED]'));
+  });
+
+  test('redacts social security numbers', () => {
+    const raw = 'Subject national identifier is 123-45-6789.';
+    const sanitized = sanitizePII(raw);
+    assert.ok(!sanitized.includes('123-45-6789'));
+    assert.ok(sanitized.includes('[SSN_REDACTED]'));
+  });
+
+  test('redacts credit card numbers and IPv4 addresses', () => {
+    const raw = 'Payment card 4111 2222 3333 4444 submitted from IP 192.168.1.105.';
+    const sanitized = sanitizePII(raw);
+    assert.ok(!sanitized.includes('4111 2222 3333 4444'));
+    assert.ok(!sanitized.includes('192.168.1.105'));
+    assert.ok(sanitized.includes('[CREDIT_CARD_REDACTED]'));
+    assert.ok(sanitized.includes('[IP_REDACTED]'));
+  });
+});
+

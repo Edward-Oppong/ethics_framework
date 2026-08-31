@@ -9,12 +9,15 @@ const path = require('path');
 const SYSTEM_PROMPT = require('./systemPrompt');
 const { FRAMEWORK_AGENTS } = require('./frameworkPrompts');
 const { streamChat } = require('./providers');
+const { sanitizePII, chatRateLimiter, globalRateLimiter, helmetMiddleware } = require('./security');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(helmetMiddleware);
 app.use(cors());
 app.use(express.json({ limit: '500kb' }));
+app.use('/api/', globalRateLimiter);
 
 // ── Security & Compliance Headers ─────────────────────────
 app.use((req, res, next) => {
@@ -22,6 +25,7 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('X-AI-Compliance', 'EU-AI-Act-Art-50');
+  res.setHeader('X-Privacy-Filter', 'PII-Sanitized');
   next();
 });
 
@@ -31,6 +35,11 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
+    compliance: {
+      framework: 'EU AI Act Article 50 & NIST AI RMF 1.0',
+      piiSanitization: true,
+      rateLimiting: true,
+    },
     providers: {
       xai: !!(process.env.XAI_API_KEY && !process.env.XAI_API_KEY.startsWith('your-')),
       huggingface: !!(process.env.HUGGINGFACE_API_KEY || process.env.HF_TOKEN),
@@ -46,14 +55,14 @@ app.get('/api/health', (req, res) => {
 // ── Streaming chat endpoint ────────────────────────────────
 // POST /api/chat
 // Body: { provider, frameworkKey, history, message, depth }
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', chatRateLimiter, async (req, res) => {
   const { provider = 'groq', frameworkKey, history = [], message, depth = 'standard' } = req.body;
 
   if (!message || typeof message !== 'string' || message.trim() === '') {
     return res.status(400).json({ error: 'message is required.' });
   }
 
-  // Prepend response depth instruction
+  // Prepend response depth instruction and apply PII sanitization
   let depthInstruction = '';
   if (depth === 'brief') {
     depthInstruction = '[Response Depth: BRIEF. Be concise.] ';
@@ -61,7 +70,8 @@ app.post('/api/chat', async (req, res) => {
     depthInstruction = '[Response Depth: DEEP DIVE. Provide detailed historical case studies and trade-offs.] ';
   }
 
-  const finalMessage = depthInstruction + message.trim();
+  const sanitizedMessage = sanitizePII(message.trim());
+  const finalMessage = depthInstruction + sanitizedMessage;
 
   // Determine system prompt — framework key overrides with specialized prompt.
   // The same provider is used but with framework-specific system prompt.
@@ -72,9 +82,14 @@ app.post('/api/chat', async (req, res) => {
     activeSystemPrompt = agent.systemPrompt;
   }
 
+  const sanitizedHistory = history.map(m => ({
+    role: m.role,
+    content: sanitizePII(m.content)
+  }));
+
   const messages = [
     { role: 'system', content: activeSystemPrompt },
-    ...history.map(m => ({ role: m.role, content: m.content })),
+    ...sanitizedHistory,
     { role: 'user', content: finalMessage },
   ];
 
