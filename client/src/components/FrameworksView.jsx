@@ -197,6 +197,102 @@ const FRAMEWORKS = [
       { year: '1999', event: 'Amartya Sen develops the Capability Approach.' },
       { year: '2009', event: 'Michael Sandel publishes Justice: What\'s the Right Thing to Do?' }
     ]
+  },
+  {
+    id: 'contractualism',
+    name: 'Contractualism',
+    icon: <Shield size={16} />,
+    difficulty: 'Advanced',
+    popularity: '84%',
+    founder: 'T.M. Scanlon & Thomas Hobbes',
+    summary: 'Judges actions by whether they could be justified to all affected persons on principles no one could reasonably reject.',
+    applications: ['Social Policy', 'Organizational Governance'],
+    proponents: ['T.M. Scanlon', 'Thomas Scanlon', 'David Gauthier'],
+    history: 'Modern contractualism derives from Scanlon\'s 1982 formulation grounding moral duties in mutual justification.',
+    corePrinciples: [
+      'Reasonable Rejection: An act is wrong if its principle could be reasonably rejected by an affected individual.',
+      'Standpoint Comparison: Compares individual burdens under competing rules rather than aggregate totals.',
+      'Mutual Accountability: Duty owed to each rational person.'
+    ],
+    advantages: [
+      'Prevents sacrificing individuals for aggregate majority welfare.',
+      'Focuses on mutual respect and justifiable social rules.',
+      'Clear baseline for institutional legitimacy.'
+    ],
+    criticisms: [
+      'Determining what counts as \'reasonable\' rejection can be circular.',
+      'Excludes non-rational beings or future generations without modifications.',
+      'Demanding standard for everyday micro-decisions.'
+    ],
+    timeline: [
+      { year: '1651', event: 'Thomas Hobbes publishes Leviathan (classic social contract).' },
+      { year: '1982', event: 'T.M. Scanlon publishes Contractualism and Utilitarianism.' },
+      { year: '1998', event: 'Scanlon formalizes What We Owe to Each Other.' }
+    ]
+  },
+  {
+    id: 'environmental',
+    name: 'Environmental & Biocentric',
+    icon: <Compass size={16} />,
+    difficulty: 'Intermediate',
+    popularity: '89%',
+    founder: 'Aldo Leopold & Arne Naess',
+    summary: 'Extends moral concern beyond humans to ecosystems, biodiversity, and unborn future generations.',
+    applications: ['Climate Policy', 'Resource Sustainability', 'AI Energy Footprint'],
+    proponents: ['Aldo Leopold', 'Arne Naess', 'Hans Jonas'],
+    history: 'Emerged from early 20th-century conservation movements and formalized in deep ecology and intergenerational ethics.',
+    corePrinciples: [
+      'The Land Ethic: A thing is right when it preserves the integrity and stability of the biotic community.',
+      'Intergenerational Justice: Duties to protect resources and biosphere for unborn generations.',
+      'Precautionary Principle: Avoid irreversible planetary and ecosystem degradation.'
+    ],
+    advantages: [
+      'Counteracts short-term anthropocentric exploitation.',
+      'Essential for long-term planetary and technological sustainability.',
+      'Gives ethical voice to non-human stakeholders and future humans.'
+    ],
+    criticisms: [
+      'Balancing immediate human poverty alleviation against ecosystem protection is difficult.',
+      'Hard to quantify non-human utility or rights in economic trade-offs.',
+      'Can be perceived as anti-development.'
+    ],
+    timeline: [
+      { year: '1949', event: 'Aldo Leopold publishes A Sand County Almanac.' },
+      { year: '1973', event: 'Arne Naess introduces Deep Ecology.' },
+      { year: '1979', event: 'Hans Jonas publishes The Imperative of Responsibility.' }
+    ]
+  },
+  {
+    id: 'pragmatism',
+    name: 'Pragmatic Ethics',
+    icon: <Brain size={16} />,
+    difficulty: 'Intermediate',
+    popularity: '86%',
+    founder: 'John Dewey & William James',
+    summary: 'Treats ethical dilemmas as dynamic practical problems requiring experimental inquiry, adaptation, and pluralistic compromise.',
+    applications: ['Tech Product Innovation', 'Crisis Management', 'Policy Experimentation'],
+    proponents: ['John Dewey', 'William James', 'Richard Rorty'],
+    history: 'Originated in late 19th-century America as a rejection of dogmatic moral absolutes in favor of scientific, adaptive inquiry.',
+    corePrinciples: [
+      'Moral Experimentalism: Principles are hypotheses to be tested by real-world human experience.',
+      'Continuous Inquiry: Ethics is a dynamic learning process, not a static rulebook.',
+      'Value Pluralism: Seeks workable harmonies among competing goods rather than ideological purity.'
+    ],
+    advantages: [
+      'Highly flexible and adaptable to novel, fast-changing technological scenarios.',
+      'Avoids dogmatic deadlock by focusing on practical problem resolution.',
+      'Encourages ongoing feedback, iteration, and improvement.'
+    ],
+    criticisms: [
+      'Can drift into unprincipled moral relativism or opportunism.',
+      'Lacks hard inviolable red lines for absolute atrocities.',
+      'May over-prioritize short-term compromises over fundamental justice.'
+    ],
+    timeline: [
+      { year: '1908', event: 'John Dewey & James Tufts publish Ethics.' },
+      { year: '1920', event: 'Dewey outlines Reconstruction in Philosophy.' },
+      { year: '1999', event: 'Modern revival in bioethics and engineering ethics.' }
+    ]
   }
 ];
 

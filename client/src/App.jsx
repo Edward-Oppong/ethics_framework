@@ -143,6 +143,18 @@ function AppInner() {
     addToast('Session deleted', 'info');
   };
 
+  const importSessions = (imported) => {
+    if (!Array.isArray(imported) || imported.length === 0) return;
+    setSessions(prev => {
+      const existingIds = new Set(prev.map(s => s.id));
+      const newOnes = imported.filter(s => s && s.id && !existingIds.has(s.id));
+      const combined = [...newOnes, ...prev];
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(combined)); } catch {}
+      return combined;
+    });
+    addToast(`Successfully imported ${imported.length} sessions`, 'success');
+  };
+
   // ── Navigate ────────────────────────────────────────────
   const navigate = (view) => {
     setActiveView(view);
@@ -362,6 +374,7 @@ function AppInner() {
                 onLoad={loadSession}
                 onDelete={deleteSession}
                 onNavigate={navigate}
+                onImportSessions={importSessions}
               />
             )}
 
